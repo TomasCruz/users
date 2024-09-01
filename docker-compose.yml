@@ -1,0 +1,82 @@
+services:
+  db:
+    container_name: pgdb
+    image: postgres
+    environment:
+      POSTGRES_USER: ${HEX_TEMPLATE_USERS_DB_USER}
+      POSTGRES_PASSWORD: ${HEX_TEMPLATE_USERS_DB_PSWD}
+      POSTGRES_DB: ${HEX_TEMPLATE_USERS_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    ports:
+      - 5351:5432
+    networks:
+      - default
+    restart: always
+
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes: 
+      - zoo_data:/var/lib/zookeeper/data
+      - zoo_log:/var/lib/zookeeper/log
+    networks:
+      - default
+    restart: always
+
+  # reachable on 9092 from the host and on 29092 from inside docker compose
+  kafka:
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: kafka-cluster cluster-id --bootstrap-server kafka:9092 || exit 1
+      interval: 1s
+      timeout: 10s
+      retries: 10
+    volumes: 
+      - broker_data:/var/lib/kafka/data
+    networks:
+      - default
+    restart: always
+
+  init-kafka:
+    container_name: init-kafka
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -c
+      - |
+        kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic user-created --replication-factor 1 --partitions 1
+        kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic user-updated --replication-factor 1 --partitions 1
+        kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic user-deleted --replication-factor 1 --partitions 1
+
+networks:
+  default:
+
+volumes:
+  db_data:
+  zoo_data:
+  zoo_log:
+  broker_data:
