@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	"github.com/TomasCruz/users/internal/configuration"
 	"github.com/joho/godotenv"
 )
@@ -27,7 +25,6 @@ func setupFromEnvVars() (configuration.Config, error) {
 	if err != nil {
 		return configuration.Config{}, err
 	}
-	log.Printf("HEX_TEMPLATE_USERS_DB_MIGRATION_PATH: %s", dbMigrationPath)
 
 	kafkaBroker, err := readAndCheckEnvVar("HEX_TEMPLATE_USERS_KAFKA_BROKER")
 	if err != nil {

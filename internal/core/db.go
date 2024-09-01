@@ -1,8 +1,10 @@
 package core
 
+import "io"
+
 // DB is an interface through which to talk with DB
 type DB interface {
-	Close()
+	io.Closer
 	Health(dbString string) error
 	// CreateUser(userID uuid.UUID, firstName, lastName, nickName, pswdHash, email, country string, createdAt, updatedAt time.Time) (entities.User, error)
 	// GetUserByID(userID uuid.UUID) (entities.User, error)

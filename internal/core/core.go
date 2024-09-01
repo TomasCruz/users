@@ -7,13 +7,13 @@ import (
 type Core struct {
 	config configuration.Config
 	db     DB
-	kp     Msg
+	msg    Msg
 }
 
 func New(config configuration.Config, db DB, msg Msg) Core {
 	return Core{
 		config: config,
 		db:     db,
-		kp:     msg,
+		msg:    msg,
 	}
 }

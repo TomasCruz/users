@@ -1,5 +1,5 @@
 package database
 
-func (pDB postgresDB) Close() {
-	pDB.db.Close()
+func (pDB postgresDB) Close() error {
+	return pDB.db.Close()
 }

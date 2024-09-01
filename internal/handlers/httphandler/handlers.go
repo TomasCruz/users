@@ -3,7 +3,6 @@ package httphandler
 import (
 	"net/http"
 
-	"github.com/TomasCruz/users/internal/core"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,8 +15,7 @@ import (
 // @Failure			500				{object}		model.ErrResp						"Internal server error"
 // @Router /health [get]
 func (h HTTPHandler) HealthHandler(c echo.Context) error {
-	cr := core.New(h.config, h.db, h.msg)
-	err := cr.Health()
+	err := h.cr.Health()
 	if err != nil {
 		return errorResponse(c, http.StatusInternalServerError, err, "")
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/repos/database"
 	"github.com/TomasCruz/users/internal/repos/msg"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
 
@@ -30,24 +31,35 @@ func main() {
 		log.Fatalf("failed to create Kafka producer: %s", err.Error())
 	}
 
+	// new Core
+	cr := core.New(config, db, msg)
+
 	// init HTTP handler
-	e := httphandler.New(config, db, msg)
+	e := echo.New()
+	e.Logger.SetLevel(log.INFO)
+	h := httphandler.New(e, cr, config)
 
 	// graceful shutdown
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
 
 	<-stop
-	gracefulShutdown(db, msg, e)
+	gracefulShutdown(db, msg, h)
 }
 
-func gracefulShutdown(db core.DB, msg core.Msg, e core.Http) {
-	// DB
-	defer db.Close()
+func gracefulShutdown(db core.DB, msg core.Msg, h httphandler.HTTPHandler) {
+	// Echo
+	err := h.Close()
+	if err != nil {
+		log.Error(err)
+	}
 
 	// Kafka
-	defer msg.Close()
+	msg.Close()
 
-	// Echo
-	e.Close()
+	// DB
+	err = db.Close()
+	if err != nil {
+		log.Error(err)
+	}
 }

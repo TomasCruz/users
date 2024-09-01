@@ -7,21 +7,16 @@ import (
 	"github.com/TomasCruz/users/internal/configuration"
 	"github.com/TomasCruz/users/internal/core"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
 
 type HTTPHandler struct {
 	e      *echo.Echo
-	db     core.DB
-	msg    core.Msg
+	cr     core.Core
 	config configuration.Config
 }
 
-func New(config configuration.Config, db core.DB, msg core.Msg) core.Http {
-	e := echo.New()
-	e.Logger.SetLevel(log.INFO)
-
-	httpHandler := HTTPHandler{e: e, db: db, msg: msg, config: config}
+func New(e *echo.Echo, cr core.Core, config configuration.Config) HTTPHandler {
+	httpHandler := HTTPHandler{e: e, cr: cr, config: config}
 	httpHandler.bindRoutes()
 
 	// fire up the server
