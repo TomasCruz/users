@@ -5,9 +5,9 @@ import (
 	"os/signal"
 
 	"github.com/TomasCruz/users/internal/core"
+	"github.com/TomasCruz/users/internal/database"
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
-	"github.com/TomasCruz/users/internal/repos/database"
-	"github.com/TomasCruz/users/internal/repos/msg"
+	"github.com/TomasCruz/users/internal/msg"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
