@@ -21,11 +21,6 @@ func setupFromEnvVars() (configuration.Config, error) {
 		return configuration.Config{}, err
 	}
 
-	dbMigrationPath, err := readAndCheckEnvVar("HEX_TEMPLATE_USERS_DB_MIGRATION_PATH")
-	if err != nil {
-		return configuration.Config{}, err
-	}
-
 	kafkaBroker, err := readAndCheckEnvVar("HEX_TEMPLATE_USERS_KAFKA_BROKER")
 	if err != nil {
 		return configuration.Config{}, err
@@ -49,7 +44,6 @@ func setupFromEnvVars() (configuration.Config, error) {
 	return configuration.Config{
 		Port:            port,
 		DbURL:           dbURL,
-		DbMigrationPath: dbMigrationPath,
 		KafkaBroker:     kafkaBroker,
 		CreateUserTopic: createUserTopic,
 		UpdateUserTopic: updateUserTopic,

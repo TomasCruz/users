@@ -5,7 +5,6 @@ services:
     environment:
       POSTGRES_USER: ${HEX_TEMPLATE_USERS_DB_USER}
       POSTGRES_PASSWORD: ${HEX_TEMPLATE_USERS_DB_PSWD}
-      POSTGRES_DB: ${HEX_TEMPLATE_USERS_DB}
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:

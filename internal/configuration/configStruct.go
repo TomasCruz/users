@@ -4,7 +4,6 @@ package configuration
 type Config struct {
 	Port            string
 	DbURL           string
-	DbMigrationPath string
 	KafkaBroker     string
 	CreateUserTopic string
 	UpdateUserTopic string

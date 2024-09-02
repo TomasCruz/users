@@ -26,7 +26,7 @@ func InitDB(config configuration.Config) (core.DB, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance(config.DbMigrationPath, "", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://internal/repos/database/migrations", "", driver)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
