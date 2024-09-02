@@ -1,0 +1,24 @@
+definitions:
+  entities.ErrResp:
+    properties:
+      errorMessage:
+        example: A horrible, terrible, absolutely awful error
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /health:
+    get:
+      operationId: health
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Healthy
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+      summary: health check
+swagger: "2.0"

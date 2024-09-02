@@ -25,3 +25,24 @@ topics:
 
 list-topics:
 	docker compose exec kafka kafka-topics --bootstrap-server kafka:9092 --list
+
+# Testing
+.PHONY: mocks
+mocks:
+	rm -f ./tests/mocks/*.go
+	CGO_ENABLED=1 /usr/local/go/bin/mockery --all --output ./tests/mocks --dir ./internal/core/
+
+.PHONY: test
+test: mocks docs fmt
+	go test -v -count=1 -tags test  ./...
+
+.PHONY: integration
+integration:
+	go test -v -count=1 -tags integration ./...
+
+# docs
+.PHONY: docs
+docs:
+	swag init -g ./cmd/main.go -o ./docs/
+	rm ./docs/docs.go
+	rm ./docs/swagger.json

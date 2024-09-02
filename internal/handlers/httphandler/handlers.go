@@ -8,11 +8,10 @@ import (
 
 // Health godoc
 // @Summary health check
-// @Description display health status
 // @ID health
 // @Produce	json
 // @Success			204 																"Healthy"
-// @Failure			500				{object}		model.ErrResp						"Internal server error"
+// @Failure			500				{object}		entities.ErrResp					"Internal server error"
 // @Router /health [get]
 func (h HTTPHandler) HealthHandler(c echo.Context) error {
 	err := h.cr.Health()
