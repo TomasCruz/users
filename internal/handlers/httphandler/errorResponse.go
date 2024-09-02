@@ -10,7 +10,7 @@ import (
 
 func errorResponse(c echo.Context, errCode int, err error, msg string) error {
 	if err != nil {
-		log.Error(err)
+		log.Error(err) // TODO make logging consistent, with call stack
 
 		if msg == "" {
 			respErr := errors.Unwrap(err)

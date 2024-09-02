@@ -41,6 +41,57 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/{user-id}": {
+            "get": {
+                "description": "gets user details",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "gets user",
+                "operationId": "get-user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details",
+                        "schema": {
+                            "$ref": "#/definitions/entities.UserResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad ID",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    },
+                    "424": {
+                        "description": "Database Error",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -50,6 +101,32 @@ const docTemplate = `{
                 "errorMessage": {
                     "type": "string",
                     "example": "A horrible, terrible, absolutely awful error"
+                }
+            }
+        },
+        "entities.UserResp": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "pswd_hash": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             }
         }

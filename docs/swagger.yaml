@@ -5,6 +5,23 @@ definitions:
         example: A horrible, terrible, absolutely awful error
         type: string
     type: object
+  entities.UserResp:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      pswd_hash:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
 info:
   contact:
     name: TomasCruz
@@ -29,4 +46,38 @@ paths:
           schema:
             $ref: '#/definitions/entities.ErrResp'
       summary: health check
+  /users/{user-id}:
+    get:
+      description: gets user details
+      operationId: get-user
+      parameters:
+      - description: User id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User details
+          schema:
+            $ref: '#/definitions/entities.UserResp'
+        "400":
+          description: Bad ID
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+        "424":
+          description: Database Error
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+      summary: gets user
 swagger: "2.0"
