@@ -1,0 +1,39 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/health": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "health check",
+                "operationId": "health",
+                "responses": {
+                    "204": {
+                        "description": "Healthy"
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entities.ErrResp": {
+            "type": "object",
+            "properties": {
+                "errorMessage": {
+                    "type": "string",
+                    "example": "A horrible, terrible, absolutely awful error"
+                }
+            }
+        }
+    }
+}
