@@ -44,4 +44,3 @@ integration:
 .PHONY: docs
 docs:
 	swag init -g ./cmd/main.go -o ./docs/
-	rm ./docs/docs.go

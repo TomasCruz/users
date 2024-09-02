@@ -6,7 +6,15 @@ definitions:
         type: string
     type: object
 info:
-  contact: {}
+  contact:
+    name: TomasCruz
+    url: https://github.com/TomasCruz/users
+  description: Users service
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  title: Users
+  version: "1.0"
 paths:
   /health:
     get:

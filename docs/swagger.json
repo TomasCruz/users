@@ -1,7 +1,17 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Users service",
+        "title": "Users",
+        "contact": {
+            "name": "TomasCruz",
+            "url": "https://github.com/TomasCruz/users"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://mit-license.org/"
+        },
+        "version": "1.0"
     },
     "paths": {
         "/health": {
