@@ -3,6 +3,8 @@ package httphandler
 import (
 	"context"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 func (h HTTPHandler) Close() error {
@@ -11,8 +13,7 @@ func (h HTTPHandler) Close() error {
 
 	// shut down HTTP server
 	if err := h.e.Shutdown(shutdownCtx); err != nil {
-		h.e.Logger.Error(err)
-		return err
+		return errors.WithStack(err)
 	}
 
 	return nil

@@ -6,29 +6,29 @@ import (
 
 	"github.com/TomasCruz/users/internal/core"
 	"github.com/TomasCruz/users/internal/database"
+	"github.com/TomasCruz/users/internal/errstack"
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/msg"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
 
 func Start() {
 	// populate configuration
 	config, err := setupFromEnvVars()
 	if err != nil {
-		log.Fatalf("failed to read environment variables: %s", err.Error())
+		errstack.Fatal(err, "failed to read environment variables")
 	}
 
 	// init DB
 	db, err := database.InitDB(config)
 	if err != nil {
-		log.Fatalf("failed to initialize database: %s", err.Error())
+		errstack.Fatal(err, "failed to initialize database")
 	}
 
 	// Kafka producer
 	msg, err := msg.InitMsg(config)
 	if err != nil {
-		log.Fatalf("failed to create Kafka producer: %s", err.Error())
+		errstack.Fatal(err, "failed to create Kafka producer")
 	}
 
 	// new Core
@@ -36,7 +36,6 @@ func Start() {
 
 	// init HTTP handler
 	e := echo.New()
-	e.Logger.SetLevel(log.INFO)
 	h := httphandler.New(e, cr, config)
 
 	// graceful shutdown
@@ -51,7 +50,7 @@ func gracefulShutdown(db core.DB, msg core.Msg, h httphandler.HTTPHandler) {
 	// Echo
 	err := h.Close()
 	if err != nil {
-		log.Error(err)
+		errstack.Error(err, "Echo Close failed")
 	}
 
 	// Kafka
@@ -60,6 +59,6 @@ func gracefulShutdown(db core.DB, msg core.Msg, h httphandler.HTTPHandler) {
 	// DB
 	err = db.Close()
 	if err != nil {
-		log.Error(err)
+		errstack.Error(err, "DB Close failed")
 	}
 }

@@ -5,13 +5,10 @@ import (
 
 	"github.com/TomasCruz/users/internal/entities"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
 
 func errorResponse(c echo.Context, errCode int, err error, msg string) error {
 	if err != nil {
-		log.Error(err) // TODO make logging consistent, with call stack
-
 		if msg == "" {
 			respErr := errors.Unwrap(err)
 			if respErr == nil {

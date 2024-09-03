@@ -28,7 +28,7 @@ func (pDB postgresDB) GetUserByID(userID uuid.UUID) (entities.User, error) {
 	if err != nil {
 		// sql.ErrNoRows -> ErrNonexistingUser
 		if errors.Is(err, sql.ErrNoRows) {
-			return entities.User{}, entities.ErrNonexistingUser
+			return entities.User{}, errors.WithStack(entities.ErrNonexistingUser)
 		}
 
 		return entities.User{}, errors.Wrap(entities.ErrGetUser, err.Error())
@@ -51,17 +51,14 @@ func (pDB postgresDB) GetUserByID(userID uuid.UUID) (entities.User, error) {
 
 // 	totalCount, err := pDB.countFilteredQueryResults(filteredQuery)
 // 	if err != nil {
-// 		log.Error(err)
 // 		return nil, 0, err
 // 	}
 
 // 	parametrizedQueryString := pDB.makePaginatedQuery(filteredQuery, paginator)
-// 	log.Info(parametrizedQueryString)
 
 // 	var rows *sql.Rows
 // 	if rows, err = pDB.db.Query(parametrizedQueryString); err != nil {
-// 		log.Error(err)
-// 		return nil, 0, err
+// 		return nil, 0, errors.WithStack(err)
 // 	}
 // 	defer rows.Close()
 
@@ -78,8 +75,7 @@ func (pDB postgresDB) GetUserByID(userID uuid.UUID) (entities.User, error) {
 // 		)
 
 // 		if err = rows.Scan(&userID, &firstName, &lastName, &pswdHash, &email, &createdAt, &updatedAt); err != nil {
-// 			log.Error(err)
-// 			return nil, 0, err
+// 			return nil, 0, errors.WithStack(err)
 // 		}
 
 // 		user := entities.User{
@@ -117,7 +113,7 @@ func (pDB postgresDB) getUserByEmail(email string) (entities.User, error) {
 	if err != nil {
 		// sql.ErrNoRows -> ErrNonexistingUser
 		if errors.Is(err, sql.ErrNoRows) {
-			return entities.User{}, entities.ErrNonexistingUser
+			return entities.User{}, errors.WithStack(entities.ErrNonexistingUser)
 		}
 
 		return entities.User{}, errors.Wrap(entities.ErrGetUser, err.Error())
@@ -154,7 +150,7 @@ func (pDB postgresDB) getUserByIDForUpdate(userID uuid.UUID) (entities.User, err
 	if err != nil {
 		// sql.ErrNoRows -> ErrNonexistingUser
 		if errors.Is(err, sql.ErrNoRows) {
-			return entities.User{}, entities.ErrNonexistingUser
+			return entities.User{}, errors.WithStack(entities.ErrNonexistingUser)
 		}
 
 		return entities.User{}, errors.Wrap(entities.ErrGetUser, err.Error())
