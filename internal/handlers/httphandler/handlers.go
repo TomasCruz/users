@@ -3,6 +3,7 @@ package httphandler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/TomasCruz/users/internal/entities"
 	"github.com/TomasCruz/users/internal/errlog"
@@ -60,4 +61,42 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 
 	resp := entities.UserRespFromUser(user)
 	return c.JSON(http.StatusOK, resp)
+}
+
+// ListUserHandler godoc
+// @Summary list users
+// @Description list user details
+// @ID list-user
+// @Produce json
+// @Param			country			query			string					false		"Country"
+// @Param			page-size		query			string					false		"Page size"
+// @Param			page-number		query			string					false		"Page number"
+// @Success			200 			{array}			entities.UserResp					"User detail list"
+// @Failure			400				{object}		entities.ErrResp					"Bad request"
+// @Failure			424				{object}		entities.ErrResp					"Database Error"
+// @Failure			500				{object}		entities.ErrResp					"Internal server error"
+// @Router /users [get]
+func (h HTTPHandler) ListUserHandler(c echo.Context) error {
+	values := c.QueryParams()
+	filter := entities.MakeFilter(values)
+	paginator, err := entities.MakePaginator(values)
+	if err != nil {
+		return errorResponse(c, http.StatusBadRequest, err, "")
+	}
+
+	users, totalCount, err := h.cr.ListUser(filter, paginator)
+	if err != nil {
+		switch {
+		case errors.Is(err, entities.ErrListUser):
+			return errorResponse(c, http.StatusFailedDependency, err, entities.ErrListUser.Error())
+		case errors.Is(err, entities.ErrCountFilteredQuery):
+			return errorResponse(c, http.StatusFailedDependency, err, entities.ErrCountFilteredQuery.Error())
+		}
+
+		return errorResponse(c, http.StatusInternalServerError, err, "")
+	}
+
+	c.Response().Header().Set("X-Total-Count", strconv.FormatInt(totalCount, 10))
+	c.Response().Header().Set("X-Result-Count", strconv.FormatInt(int64(len(users)), 10))
+	return c.JSON(http.StatusOK, users)
 }

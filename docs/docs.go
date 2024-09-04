@@ -42,6 +42,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/users": {
+            "get": {
+                "description": "list user details",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "list users",
+                "operationId": "list-user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Country",
+                        "name": "country",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page size",
+                        "name": "page-size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page number",
+                        "name": "page-number",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User detail list",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.UserResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    },
+                    "424": {
+                        "description": "Database Error",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{user-id}": {
             "get": {
                 "description": "gets user details",
@@ -107,6 +166,9 @@ const docTemplate = `{
         "entities.UserResp": {
             "type": "object",
             "properties": {
+                "country": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },

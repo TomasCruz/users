@@ -16,6 +16,7 @@ type UserResp struct {
 	LastName  string    `json:"last_name"`
 	PswdHash  string    `json:"pswd_hash"`
 	Email     string    `json:"email"`
+	Country   string    `json:"country"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -28,6 +29,7 @@ func UserRespFromUser(user User) UserResp {
 		LastName:  user.LastName,
 		PswdHash:  user.PswdHash,
 		Email:     user.Email,
+		Country:   user.Country,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}

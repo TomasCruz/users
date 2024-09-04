@@ -15,16 +15,17 @@ func (pDB postgresDB) GetUserByID(userID uuid.UUID) (entities.User, error) {
 		lastName  string
 		pswdHash  string
 		email     string
+		country   string
 		createdAt time.Time
 		updatedAt time.Time
 	)
 
-	queryString := `SELECT first_name, last_name, pswd_hash, email, created_at, updated_at
+	queryString := `SELECT first_name, last_name, pswd_hash, email, country, created_at, updated_at
 		FROM users
 		WHERE user_id=$1`
 
 	err := pDB.db.QueryRow(queryString, userID).
-		Scan(&firstName, &lastName, &pswdHash, &email, &createdAt, &updatedAt)
+		Scan(&firstName, &lastName, &pswdHash, &email, &country, &createdAt, &updatedAt)
 	if err != nil {
 		// sql.ErrNoRows -> ErrNonexistingUser
 		if errors.Is(err, sql.ErrNoRows) {
@@ -40,59 +41,62 @@ func (pDB postgresDB) GetUserByID(userID uuid.UUID) (entities.User, error) {
 		LastName:  lastName,
 		PswdHash:  pswdHash,
 		Email:     email,
+		Country:   country,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}, nil
 }
 
-// func (pDB postgresDB) ListUser(filter entities.Filter, paginator entities.Paginator) ([]entities.User, int64, error) {
-// 	basicQuery := `SELECT user_id, first_name, last_name, pswd_hash, email, created_at, updated_at FROM users`
-// 	filteredQuery := pDB.makeFilteredQuery(basicQuery, filter)
+func (pDB postgresDB) ListUser(filter entities.Filter, paginator entities.Paginator) ([]entities.User, int64, error) {
+	basicQuery := `SELECT user_id, first_name, last_name, pswd_hash, email, country, created_at, updated_at FROM users`
+	filteredQuery, args := pDB.makeFilteredQuery(basicQuery, filter)
 
-// 	totalCount, err := pDB.countFilteredQueryResults(filteredQuery)
-// 	if err != nil {
-// 		return nil, 0, err
-// 	}
+	totalCount, err := pDB.countFilteredQueryResults(filteredQuery, args)
+	if err != nil {
+		return nil, 0, err
+	}
 
-// 	parametrizedQueryString := pDB.makePaginatedQuery(filteredQuery, paginator)
+	parametrizedQueryString, args := pDB.makePaginatedQuery(filteredQuery, paginator, args)
 
-// 	var rows *sql.Rows
-// 	if rows, err = pDB.db.Query(parametrizedQueryString); err != nil {
-// 		return nil, 0, errors.WithStack(err)
-// 	}
-// 	defer rows.Close()
+	var rows *sql.Rows
+	if rows, err = pDB.db.Query(parametrizedQueryString, args...); err != nil {
+		return nil, 0, errors.WithStack(err)
+	}
+	defer rows.Close()
 
-// 	var users []entities.User
-// 	for rows.Next() {
-// 		var (
-// 			userID    uuid.UUID
-// 			firstName string
-// 			lastName  string
-// 			pswdHash  string
-// 			email     string
-// 			createdAt time.Time
-// 			updatedAt time.Time
-// 		)
+	var users []entities.User
+	for rows.Next() {
+		var (
+			userID    uuid.UUID
+			firstName string
+			lastName  string
+			pswdHash  string
+			email     string
+			country   string
+			createdAt time.Time
+			updatedAt time.Time
+		)
 
-// 		if err = rows.Scan(&userID, &firstName, &lastName, &pswdHash, &email, &createdAt, &updatedAt); err != nil {
-// 			return nil, 0, errors.WithStack(err)
-// 		}
+		if err = rows.Scan(&userID, &firstName, &lastName, &pswdHash, &email, &country, &createdAt, &updatedAt); err != nil {
+			return nil, 0, errors.WithStack(err)
+		}
 
-// 		user := entities.User{
-// 			UserID:    userID,
-// 			FirstName: firstName,
-// 			LastName:  lastName,
-// 			PswdHash:  pswdHash,
-// 			Email:     email,
-// 			CreatedAt: createdAt,
-// 			UpdatedAt: updatedAt,
-// 		}
+		user := entities.User{
+			UserID:    userID,
+			FirstName: firstName,
+			LastName:  lastName,
+			PswdHash:  pswdHash,
+			Email:     email,
+			Country:   country,
+			CreatedAt: createdAt,
+			UpdatedAt: updatedAt,
+		}
 
-// 		users = append(users, user)
-// 	}
+		users = append(users, user)
+	}
 
-// 	return users, totalCount, nil
-// }
+	return users, totalCount, nil
+}
 
 func (pDB postgresDB) getUserByEmail(email string) (entities.User, error) {
 	var (
@@ -100,16 +104,17 @@ func (pDB postgresDB) getUserByEmail(email string) (entities.User, error) {
 		firstName string
 		lastName  string
 		pswdHash  string
+		country   string
 		createdAt time.Time
 		updatedAt time.Time
 	)
 
-	queryString := `SELECT user_id, first_name, last_name, pswd_hash, created_at, updated_at
+	queryString := `SELECT user_id, first_name, last_name, pswd_hash, country, created_at, updated_at
 		FROM users
 		WHERE email=$1`
 
 	err := pDB.db.QueryRow(queryString, email).
-		Scan(&userID, &firstName, &lastName, &pswdHash, &createdAt, &updatedAt)
+		Scan(&userID, &firstName, &lastName, &pswdHash, &country, &createdAt, &updatedAt)
 	if err != nil {
 		// sql.ErrNoRows -> ErrNonexistingUser
 		if errors.Is(err, sql.ErrNoRows) {
@@ -125,6 +130,7 @@ func (pDB postgresDB) getUserByEmail(email string) (entities.User, error) {
 		LastName:  lastName,
 		PswdHash:  pswdHash,
 		Email:     email,
+		Country:   country,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}, nil
@@ -136,17 +142,18 @@ func (pDB postgresDB) getUserByIDForUpdate(userID uuid.UUID) (entities.User, err
 		lastName  string
 		pswdHash  string
 		email     string
+		country   string
 		createdAt time.Time
 		updatedAt time.Time
 	)
 
-	queryString := `SELECT first_name, last_name, pswd_hash, email, created_at, updated_at
+	queryString := `SELECT first_name, last_name, pswd_hash, email, country, created_at, updated_at
 		FROM users
 		WHERE user_id=$1
 		FOR NO KEY UPDATE`
 
 	err := pDB.db.QueryRow(queryString, userID).
-		Scan(&firstName, &lastName, &pswdHash, &email, &createdAt, &updatedAt)
+		Scan(&firstName, &lastName, &pswdHash, &email, &country, &createdAt, &updatedAt)
 	if err != nil {
 		// sql.ErrNoRows -> ErrNonexistingUser
 		if errors.Is(err, sql.ErrNoRows) {
@@ -162,6 +169,7 @@ func (pDB postgresDB) getUserByIDForUpdate(userID uuid.UUID) (entities.User, err
 		LastName:  lastName,
 		PswdHash:  pswdHash,
 		Email:     email,
+		Country:   country,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}, nil

@@ -23,6 +23,13 @@ import (
 // 		return errors.Wrap(entities.ErrBadEmail, err.Error())
 // 	}
 
+// 	countryLength := len(req.Country)
+// 	if countryLength != 3 && countryLength != 2 {
+// 		err := errors.WithStack(entities.ErrCountryLength)
+// 		errlog.Error(err, fmt.Sprintf("wrong country length %d", strconv.Itoa(countryLength)))
+// 		return err
+// 	}
+
 // 	return nil
 // }
 
@@ -49,6 +56,13 @@ import (
 // 		if err := h.analyseEmail(*req.Email); err != nil {
 // 			return errors.Wrap(entities.ErrBadEmail, err.Error())
 // 		}
+// 	}
+
+// 	countryLength := len(req.Country)
+// 	if countryLength != 3 && countryLength != 2 {
+// 		err := errors.WithStack(entities.ErrCountryLength)
+// 		errlog.Error(err, fmt.Sprintf("wrong country length %d", strconv.Itoa(countryLength)))
+// 		return err
 // 	}
 
 // 	return nil
