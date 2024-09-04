@@ -1,4 +1,4 @@
-package errstack
+package errlog
 
 import (
 	"fmt"
@@ -21,32 +21,32 @@ const (
 )
 
 func Debug(err error, msg string) {
-	s := ToStringWithStackAndLevel(DEBUG, err, msg)
+	s := ToString(DEBUG, err, msg)
 	fmt.Print(s)
 }
 
 func Info(err error, msg string) {
-	s := ToStringWithStackAndLevel(INFO, err, msg)
+	s := ToString(INFO, err, msg)
 	fmt.Print(s)
 }
 
 func Warn(err error, msg string) {
-	s := ToStringWithStackAndLevel(WARN, err, msg)
+	s := ToString(WARN, err, msg)
 	fmt.Print(s)
 }
 
 func Error(err error, msg string) {
-	s := ToStringWithStackAndLevel(ERROR, err, msg)
+	s := ToString(ERROR, err, msg)
 	fmt.Print(s)
 }
 
 func Fatal(err error, msg string) {
-	s := ToStringWithStackAndLevel(FATAL, err, msg)
+	s := ToString(FATAL, err, msg)
 	fmt.Print(s)
 	os.Exit(1)
 }
 
-func ToStringWithStackAndLevel(level LogLvl, err error, msg string) string {
+func ToString(level LogLvl, err error, msg string) string {
 	var sb strings.Builder
 
 	sb.WriteString(logLvlToString(level))
@@ -68,7 +68,7 @@ func ToStringWithStackAndLevel(level LogLvl, err error, msg string) string {
 func errStackToString(err error) string {
 	var sb strings.Builder
 
-	functionCalls := errStack(err)
+	functionCalls := errlog(err)
 	for _, fc := range functionCalls {
 		sb.WriteString(fmt.Sprintf("\t%s %d -\t%s\n", fc.fileName, fc.line, fc.funcName))
 	}
@@ -100,7 +100,7 @@ type functionCall struct {
 	line     int
 }
 
-func errStack(err error) (functionCalls []functionCall) {
+func errlog(err error) (functionCalls []functionCall) {
 	if err, ok := err.(interface{ StackTrace() errors.StackTrace }); ok {
 		for _, f := range err.StackTrace() {
 			pc := uintptr(f) - 1

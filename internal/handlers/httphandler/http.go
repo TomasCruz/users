@@ -6,7 +6,7 @@ import (
 
 	"github.com/TomasCruz/users/internal/configuration"
 	"github.com/TomasCruz/users/internal/core"
-	"github.com/TomasCruz/users/internal/errstack"
+	"github.com/TomasCruz/users/internal/errlog"
 	"github.com/labstack/echo/v4"
 )
 
@@ -24,7 +24,7 @@ func New(e *echo.Echo, cr core.Core, config configuration.Config) HTTPHandler {
 	go func() {
 		err := e.Start(fmt.Sprintf(":%s", config.Port))
 		if err != nil && err != http.ErrServerClosed {
-			errstack.Fatal(err, "Echo error")
+			errlog.Fatal(err, "Echo error")
 		}
 	}()
 

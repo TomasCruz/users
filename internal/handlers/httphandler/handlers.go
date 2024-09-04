@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/TomasCruz/users/internal/entities"
-	"github.com/TomasCruz/users/internal/errstack"
+	"github.com/TomasCruz/users/internal/errlog"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,7 +19,7 @@ import (
 func (h HTTPHandler) HealthHandler(c echo.Context) error {
 	err := h.cr.Health()
 	if err != nil {
-		errstack.Error(err, "HTTPHandler.HealthHandler")
+		errlog.Error(err, "HTTPHandler.HealthHandler")
 		return errorResponse(c, http.StatusInternalServerError, err, "")
 	}
 
@@ -47,7 +47,7 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 
 	user, err := h.cr.GetUserByID(userID)
 	if err != nil {
-		errstack.Error(err, "HTTPHandler.GetUserHandler")
+		errlog.Error(err, "HTTPHandler.GetUserHandler")
 		switch {
 		case errors.Is(err, entities.ErrNonexistingUser):
 			return errorResponse(c, http.StatusNotFound, err, entities.ErrNonexistingUser.Error())
