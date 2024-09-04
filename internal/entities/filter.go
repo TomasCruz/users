@@ -16,7 +16,7 @@ func MakeFilter(values url.Values) Filter {
 
 	// extract filter
 	for k, urlValue := range values {
-		if !validFilterKey(k) {
+		if !ValidFilterKey(k) {
 			continue
 		}
 
@@ -50,7 +50,7 @@ func (f Filter) Empty() bool {
 	return len(f.Country) == 0
 }
 
-func validFilterKey(key string) bool {
+func ValidFilterKey(key string) bool {
 	switch key {
 	case "country":
 		return true
