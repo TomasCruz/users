@@ -13,7 +13,7 @@ func (c Core) GetUserByID(userID uuid.UUID) (entities.User, error) {
 
 	return user, nil
 }
-func (c Core) ListUser(filter entities.Filter, paginator entities.Paginator) ([]entities.UserResp, int64, error) {
+func (c Core) ListUser(filter entities.UserFilter, paginator entities.Paginator) ([]entities.UserResp, int64, error) {
 	users, totalCount, err := c.db.ListUser(filter, paginator)
 	if err != nil {
 		return nil, 0, err

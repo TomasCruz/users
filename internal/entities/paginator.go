@@ -13,7 +13,7 @@ type Paginator struct {
 	PageNumber int
 }
 
-func MakePaginator(values url.Values) (Paginator, error) {
+func NewPaginator(values url.Values) (Paginator, error) {
 	var pageSize int
 	var pageNumber int
 

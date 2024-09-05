@@ -47,16 +47,16 @@ func (pDB postgresDB) GetUserByID(userID uuid.UUID) (entities.User, error) {
 	}, nil
 }
 
-func (pDB postgresDB) ListUser(filter entities.Filter, paginator entities.Paginator) ([]entities.User, int64, error) {
+func (pDB postgresDB) ListUser(filter entities.UserFilter, paginator entities.Paginator) ([]entities.User, int64, error) {
 	basicQuery := `SELECT user_id, first_name, last_name, pswd_hash, email, country, created_at, updated_at FROM users`
-	filteredQuery, args := pDB.makeFilteredQuery(basicQuery, filter)
+	filteredQuery, args := pDB.makeFilteredQuery(filter, basicQuery, map[string]string{"country": "country"})
 
 	totalCount, err := pDB.countFilteredQueryResults(filteredQuery, args)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	parametrizedQueryString, args := pDB.makePaginatedQuery(filteredQuery, paginator, args)
+	parametrizedQueryString, args := pDB.makePaginatedQuery(filteredQuery, "", paginator, args)
 
 	var rows *sql.Rows
 	if rows, err = pDB.db.Query(parametrizedQueryString, args...); err != nil {

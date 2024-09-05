@@ -78,8 +78,8 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 // @Router /users [get]
 func (h HTTPHandler) ListUserHandler(c echo.Context) error {
 	values := c.QueryParams()
-	filter := entities.MakeFilter(values)
-	paginator, err := entities.MakePaginator(values)
+	filter := entities.New(values)
+	paginator, err := entities.NewPaginator(values)
 	if err != nil {
 		return errorResponse(c, http.StatusBadRequest, err, "")
 	}

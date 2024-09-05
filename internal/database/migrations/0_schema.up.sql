@@ -9,3 +9,5 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at            TIMESTAMP NOT NULL,
     UNIQUE(email)
 );
+
+CREATE INDEX idx_users_country ON users(country);

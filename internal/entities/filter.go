@@ -7,16 +7,16 @@ import (
 	"github.com/TomasCruz/users/internal/errlog"
 )
 
-type Filter struct {
+type UserFilter struct {
 	Country []string
 }
 
-func MakeFilter(values url.Values) Filter {
-	filter := Filter{}
+func New(values url.Values) UserFilter {
+	filter := UserFilter{}
 
 	// extract filter
 	for k, urlValue := range values {
-		if !ValidFilterKey(k) {
+		if !filter.ValidFilterKey(k) {
 			continue
 		}
 
@@ -46,11 +46,11 @@ func MakeFilter(values url.Values) Filter {
 	return filter
 }
 
-func (f Filter) Empty() bool {
+func (f UserFilter) Empty() bool {
 	return len(f.Country) == 0
 }
 
-func ValidFilterKey(key string) bool {
+func (f UserFilter) ValidFilterKey(key string) bool {
 	switch key {
 	case "country":
 		return true
