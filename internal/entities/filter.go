@@ -1,56 +1,34 @@
 package entities
 
-import (
-	"net/url"
-	"strings"
-
-	"github.com/TomasCruz/users/internal/errlog"
-)
-
-type UserFilter struct {
-	Country []string
-}
-
-func New(values url.Values) UserFilter {
-	filter := UserFilter{}
-
+func ExtractUserFilter(filter map[string][]string) map[string][]string {
 	// extract filter
-	for k, urlValue := range values {
-		if !filter.ValidFilterKey(k) {
+	var countries []string
+	for k, v := range filter {
+		if !validUserFilterKey(k) {
 			continue
-		}
-
-		var vs []string
-		for _, uv := range urlValue {
-			if strings.Contains(uv, ",") {
-				currVs := strings.Split(uv, ",")
-				vs = append(vs, currVs...)
-			} else {
-				vs = append(vs, uv)
-			}
 		}
 
 		switch k {
 		case "country":
-			for _, v := range vs {
+			for _, v := range v {
 				if len(v) != 2 && len(v) != 3 {
-					// log error and continue, invalid filter simply won't be applied
-					errlog.Error(ErrCountryLength, "")
+					// continue, invalid filter simply won't be applied
 					continue
 				}
-				filter.Country = append(filter.Country, v)
+				countries = append(countries, v)
 			}
 		}
 	}
 
-	return filter
+	userFilter := map[string][]string{}
+	if len(countries) != 0 {
+		userFilter["country"] = countries
+	}
+
+	return userFilter
 }
 
-func (f UserFilter) Empty() bool {
-	return len(f.Country) == 0
-}
-
-func (f UserFilter) ValidFilterKey(key string) bool {
+func validUserFilterKey(key string) bool {
 	switch key {
 	case "country":
 		return true

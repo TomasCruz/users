@@ -8,7 +8,7 @@ curl -i -X PUT -H 'Content-Type: application/json' -d '{"first_name": "FirstName
 curl -i -X GET http://localhost:8091/users/3746e0e3-d4d8-4ad1-8099-f5a3b5ab9a6d
 
 # list user
-curl -i -X GET 'http://localhost:8091/users?page-number=1&page-size=10&country=UK;USA'
+curl -i -X GET 'http://localhost:8091/users?page-number=1&page-size=10&country=UK,USA'
 
 # update user
 curl -i -X POST -H 'Content-Type: application/json' -d '{"first_name": "NewFirstName", "email": "new@a.com"}' http://localhost:8091/users/3746e0e3-d4d8-4ad1-8099-f5a3b5ab9a6d

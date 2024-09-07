@@ -13,17 +13,12 @@ func (c Core) GetUserByID(userID uuid.UUID) (entities.User, error) {
 
 	return user, nil
 }
-func (c Core) ListUser(filter entities.UserFilter, paginator entities.Paginator) ([]entities.UserResp, int64, error) {
-	users, totalCount, err := c.db.ListUser(filter, paginator)
+
+func (c Core) ListUser(filter map[string][]string, pageSize, pageNumber int) ([]entities.User, int64, error) {
+	users, totalCount, err := c.db.ListUser(filter, pageSize, pageNumber)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	l := len(users)
-	resps := make([]entities.UserResp, 0, l)
-	for _, u := range users {
-		resps = append(resps, entities.UserRespFromUser(u))
-	}
-
-	return resps, totalCount, nil
+	return users, totalCount, nil
 }

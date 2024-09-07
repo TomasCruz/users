@@ -6,7 +6,8 @@ import (
 	"strconv"
 
 	"github.com/TomasCruz/users/internal/entities"
-	"github.com/TomasCruz/users/internal/errlog"
+	"github.com/TomasCruz/users/utils"
+	"github.com/TomasCruz/users/utils/errlog"
 	"github.com/labstack/echo/v4"
 )
 
@@ -78,25 +79,30 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 // @Router /users [get]
 func (h HTTPHandler) ListUserHandler(c echo.Context) error {
 	values := c.QueryParams()
-	filter := entities.New(values)
-	paginator, err := entities.NewPaginator(values)
-	if err != nil {
-		return errorResponse(c, http.StatusBadRequest, err, "")
-	}
+	filter := utils.ExtractFilter(values)
+	userFilter := entities.ExtractUserFilter(filter)
+	pageSize, pageNumber := utils.ExtractPagination(values, nil, nil)
 
-	users, totalCount, err := h.cr.ListUser(filter, paginator)
+	users, totalCount, err := h.cr.ListUser(userFilter, pageSize, pageNumber)
 	if err != nil {
+		errlog.Error(err, "")
 		switch {
 		case errors.Is(err, entities.ErrListUser):
 			return errorResponse(c, http.StatusFailedDependency, err, entities.ErrListUser.Error())
 		case errors.Is(err, entities.ErrCountFilteredQuery):
-			return errorResponse(c, http.StatusFailedDependency, err, entities.ErrCountFilteredQuery.Error())
+			return errorResponse(c, http.StatusFailedDependency, err, entities.ErrDatabaseError.Error())
 		}
 
 		return errorResponse(c, http.StatusInternalServerError, err, "")
 	}
 
+	l := len(users)
+	resps := make([]entities.UserResp, 0, l)
+	for _, u := range users {
+		resps = append(resps, entities.UserRespFromUser(u))
+	}
+
 	c.Response().Header().Set("X-Total-Count", strconv.FormatInt(totalCount, 10))
 	c.Response().Header().Set("X-Result-Count", strconv.FormatInt(int64(len(users)), 10))
-	return c.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, resps)
 }

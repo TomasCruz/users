@@ -55,7 +55,7 @@ func ToString(level LogLvl, err error, msg string) string {
 	sb.WriteRune(' ')
 
 	if msg != "" {
-		sb.WriteString(fmt.Sprintf("%s:\n  ", msg))
+		sb.WriteString(fmt.Sprintf("%s:\n\t", msg))
 	}
 
 	sb.WriteString(err.Error())

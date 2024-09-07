@@ -6,9 +6,9 @@ import (
 
 	"github.com/TomasCruz/users/internal/core"
 	"github.com/TomasCruz/users/internal/database"
-	"github.com/TomasCruz/users/internal/errlog"
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/msg"
+	"github.com/TomasCruz/users/utils/errlog"
 	"github.com/labstack/echo/v4"
 )
 

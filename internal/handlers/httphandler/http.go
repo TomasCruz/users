@@ -6,7 +6,7 @@ import (
 
 	"github.com/TomasCruz/users/internal/configuration"
 	"github.com/TomasCruz/users/internal/core"
-	"github.com/TomasCruz/users/internal/errlog"
+	"github.com/TomasCruz/users/utils/errlog"
 	"github.com/labstack/echo/v4"
 )
 

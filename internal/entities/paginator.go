@@ -1,65 +1,51 @@
 package entities
 
-import (
-	"net/url"
-	"strconv"
+// type Paginator struct {
+// 	PageSize   int
+// 	PageNumber int
+// }
 
-	"github.com/TomasCruz/users/internal/errlog"
-	"github.com/pkg/errors"
-)
+// func ExtractPagination(values url.Values, withDefault *Paginator) Paginator {
+// 	var pageSize int
+// 	var pageNumber int
 
-type Paginator struct {
-	PageSize   int
-	PageNumber int
-}
+// 	// extract paginator
+// 	for k, urlValue := range values {
+// 		switch k {
+// 		case "page-size":
+// 			// consider only one page size value
+// 			ps64, err := strconv.ParseInt(urlValue[0], 10, 64)
+// 			if err == nil {
+// 				pageSize = int(ps64)
+// 			}
+// 		case "page-number":
+// 			// consider only one page number value
+// 			pn64, err := strconv.ParseInt(urlValue[0], 10, 64)
+// 			if err == nil {
+// 				pageNumber = int(pn64)
+// 			}
+// 		}
+// 	}
 
-func NewPaginator(values url.Values) (Paginator, error) {
-	var pageSize int
-	var pageNumber int
+// 	p := Paginator{
+// 		PageSize:   pageSize,
+// 		PageNumber: pageNumber,
+// 	}
 
-	// extract paginator
-	for k, urlValue := range values {
-		// only page size and number are valid, and there can be only one of each
-		switch k {
-		case "page-size":
-			ps64, err := strconv.ParseInt(urlValue[0], 10, 64)
-			if err != nil || ps64 <= int64(0) {
-				if err != nil {
-					err = errors.Wrap(ErrPageSize, err.Error())
-				} else {
-					err = errors.WithStack(ErrPageSize)
-				}
+// 	// for invalid pagination values
+// 	if !p.valid() {
+// 		if withDefault != nil {
+// 			// use default
+// 			return *withDefault
+// 		} else {
+// 			// don't apply pagination
+// 			return Paginator{}
+// 		}
+// 	}
 
-				// log error and return, prevent invalid page size or number from reaching DB
-				errlog.Error(err, "")
-				return Paginator{}, err
-			}
+// 	return p
+// }
 
-			pageSize = int(ps64)
-		case "page-number":
-			pn64, err := strconv.ParseInt(urlValue[0], 10, 64)
-			if err != nil || pn64 <= int64(0) {
-				if err != nil {
-					err = errors.Wrap(ErrPageNumber, err.Error())
-				} else {
-					err = errors.WithStack(ErrPageNumber)
-				}
-
-				// log error and return, prevent invalid page size or number from reaching DB
-				errlog.Error(err, "")
-				return Paginator{}, err
-			}
-
-			pageNumber = int(pn64)
-		}
-	}
-
-	return Paginator{
-		PageSize:   pageSize,
-		PageNumber: pageNumber,
-	}, nil
-}
-
-func (p Paginator) Empty() bool {
-	return p.PageSize == 0 || p.PageNumber == 0
-}
+// func (p Paginator) valid() bool {
+// 	return p.PageSize > 0 && p.PageNumber > 0
+// }
