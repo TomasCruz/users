@@ -16,7 +16,7 @@ import (
 
 // InitDB does DB migrations and verifies DB accessibility
 func InitDB(config configuration.Config) (core.DB, error) {
-	db, err := sql.Open("postgres", config.DbURL)
+	db, err := sql.Open("postgres", config.DBURL)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -26,7 +26,7 @@ func InitDB(config configuration.Config) (core.DB, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance("file://internal/database/migrations", "", driver)
+	m, err := migrate.NewWithDatabaseInstance(config.DBMigrationPath, "", driver)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -46,12 +46,15 @@ func InitDB(config configuration.Config) (core.DB, error) {
 		return nil, errors.WithStack(dbErr)
 	}
 
-	db, err = openAndCheck(config.DbURL)
+	db, err = openAndCheck(config.DBURL)
 	if err != nil {
 		return nil, err
 	}
 
-	return postgresDB{db: db}, nil
+	return postgresDB{
+		db:     db,
+		config: config,
+	}, nil
 }
 
 func openAndCheck(dbString string) (*sql.DB, error) {
@@ -69,9 +72,10 @@ func openAndCheck(dbString string) (*sql.DB, error) {
 }
 
 type postgresDB struct {
-	db *sql.DB
+	db     *sql.DB
+	config configuration.Config
 }
 
-// type postgresTx struct {
-// 	*sql.Tx
-// }
+type postgresTx struct {
+	*sql.Tx
+}

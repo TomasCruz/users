@@ -11,14 +11,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (pDB postgresDB) QueriesAndParameterNamesForListUser() (string, string, map[string]string) {
+func (pDB postgresDB) queriesAndParameterNamesForListUser() (string, string, map[string]string) {
 	basicQuery := `SELECT user_id, first_name, last_name, pswd_hash, email, country, created_at, updated_at FROM users`
 	parameterNames := map[string]string{"country": "country"}
 
 	return basicQuery, "", parameterNames
 }
 
-func (pDB postgresDB) ResultCountQuery(filteredQuery string, args []interface{}) (int64, error) {
+func (pDB postgresDB) resultCountQuery(filteredQuery string, args []interface{}) (int64, error) {
 	countFilteredQuery := fmt.Sprintf("SELECT COUNT(*) FROM (%s) AS a", filteredQuery)
 
 	var totalCount int64
@@ -31,10 +31,10 @@ func (pDB postgresDB) ResultCountQuery(filteredQuery string, args []interface{})
 }
 
 func (pDB postgresDB) ListUser(filter map[string][]string, pageSize, pageNumber int) ([]entities.User, int64, error) {
-	basicQuery, orderByQuery, parameterNames := pDB.QueriesAndParameterNamesForListUser()
+	basicQuery, orderByQuery, parameterNames := pDB.queriesAndParameterNamesForListUser()
 	filteredQuery, args := utils.BuildFilteredPostgresQuery(basicQuery, filter, parameterNames)
 
-	totalCount, err := pDB.ResultCountQuery(filteredQuery, args)
+	totalCount, err := pDB.resultCountQuery(filteredQuery, args)
 	if err != nil {
 		return nil, 0, err
 	}

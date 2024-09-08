@@ -6,8 +6,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func setupFromEnvVars() (configuration.Config, error) {
-	err := godotenv.Load()
+func ConfigFromEnvVars(envFile string) (configuration.Config, error) {
+	err := godotenv.Load(envFile)
 	if err != nil {
 		return configuration.Config{}, errors.WithStack(err)
 	}
@@ -18,6 +18,11 @@ func setupFromEnvVars() (configuration.Config, error) {
 	}
 
 	dbURL, err := readAndCheckEnvVar("HEX_TEMPLATE_USERS_DB_URL")
+	if err != nil {
+		return configuration.Config{}, errors.WithStack(err)
+	}
+
+	dbMigrationPath, err := readAndCheckEnvVar("HEX_TEMPLATE_USERS_DB_MIGRATION_PATH")
 	if err != nil {
 		return configuration.Config{}, errors.WithStack(err)
 	}
@@ -44,7 +49,8 @@ func setupFromEnvVars() (configuration.Config, error) {
 
 	return configuration.Config{
 		Port:            port,
-		DbURL:           dbURL,
+		DBURL:           dbURL,
+		DBMigrationPath: dbMigrationPath,
 		KafkaBroker:     kafkaBroker,
 		CreateUserTopic: createUserTopic,
 		UpdateUserTopic: updateUserTopic,

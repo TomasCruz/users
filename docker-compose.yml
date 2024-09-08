@@ -63,6 +63,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+    networks:
+      - default
     command:
       - /bin/sh
       - -c

@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/TomasCruz/users/internal/configuration"
 	"github.com/TomasCruz/users/internal/core"
 	"github.com/TomasCruz/users/internal/database"
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
@@ -12,12 +13,23 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Start() {
+type App struct {
+	EnvFile     string
+	Config      configuration.Config
+	ServerReady chan struct{}
+}
+
+func (application *App) Start() {
 	// populate configuration
-	config, err := setupFromEnvVars()
+	if application.EnvFile == "" {
+		application.EnvFile = ".env"
+	}
+
+	config, err := ConfigFromEnvVars(application.EnvFile)
 	if err != nil {
 		errlog.Fatal(err, "failed to read environment variables")
 	}
+	application.Config = config
 
 	// init DB
 	db, err := database.InitDB(config)
@@ -37,6 +49,11 @@ func Start() {
 	// init HTTP handler
 	e := echo.New()
 	h := httphandler.New(e, cr, config)
+
+	// notify about readiness
+	if application.ServerReady != nil {
+		application.ServerReady <- struct{}{}
+	}
 
 	// graceful shutdown
 	stop := make(chan os.Signal, 1)

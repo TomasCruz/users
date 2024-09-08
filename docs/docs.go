@@ -99,6 +99,57 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "creates user",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "creates user",
+                "operationId": "create-user",
+                "parameters": [
+                    {
+                        "description": "Payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entities.CreateUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User details",
+                        "schema": {
+                            "$ref": "#/definitions/entities.UserResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    },
+                    "409": {
+                        "description": "Existing email",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    },
+                    "424": {
+                        "description": "Database or Kafka Error",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ErrResp"
+                        }
+                    }
+                }
             }
         },
         "/users/{user-id}": {
@@ -154,6 +205,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entities.CreateUserReq": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "nick_name": {
+                    "type": "string"
+                },
+                "pswd_hash": {
+                    "type": "string"
+                }
+            }
+        },
         "entities.ErrResp": {
             "type": "object",
             "properties": {

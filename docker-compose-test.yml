@@ -1,0 +1,87 @@
+services:
+  db_test:
+    container_name: pgdb_test
+    image: postgres
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    volumes:
+      - db_data_test:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    ports:
+      - 15351:5432
+    networks:
+      - default_test
+    restart: always
+
+  zookeeper_test:
+    container_name: zookeeper_test
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 12181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes: 
+      - zoo_data_test:/var/lib/zookeeper/data
+      - zoo_log_test:/var/lib/zookeeper/log
+    networks:
+      - default_test
+    restart: always
+
+  # reachable on 19092 from the host and on 39092 from inside docker compose
+  kafka_test:
+    container_name: kafka_test
+    depends_on:
+      - zookeeper_test
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - 19092:9092
+      - 39092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper_test:12181
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka_test:39092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      # KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka_test:39092,PLAINTEXT_HOST://localhost:19092'
+      # KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      # KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: kafka-cluster cluster-id --bootstrap-server kafka_test:19092 || exit 1
+      interval: 1s
+      timeout: 10s
+      retries: 10
+    volumes: 
+      - broker_data_test:/var/lib/kafka/data
+    networks:
+      - default_test
+    restart: always
+
+  init-kafka_test:
+    container_name: init-kafka_test
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      kafka_test:
+        condition: service_healthy
+    networks:
+      - default_test
+    command:
+      - /bin/sh
+      - -c
+      - |
+        kafka-topics --bootstrap-server kafka_test:39092 --create --if-not-exists --topic user-created --replication-factor 1 --partitions 1
+        kafka-topics --bootstrap-server kafka_test:39092 --create --if-not-exists --topic user-updated --replication-factor 1 --partitions 1
+        kafka-topics --bootstrap-server kafka_test:39092 --create --if-not-exists --topic user-deleted --replication-factor 1 --partitions 1
+
+networks:
+  default_test:
+
+volumes:
+  db_data_test:
+  zoo_data_test:
+  zoo_log_test:
+  broker_data_test:

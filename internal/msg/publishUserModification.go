@@ -1,19 +1,27 @@
 package msg
 
-// func (k kafkaMsg) PublishUserModification(resp entities.UserResp, topic string) error {
-// 	serialized, err := json.Marshal(resp)
-// 	if err != nil {
-// 		return errors.WithStack(err)
-// 	}
+import (
+	"encoding/json"
 
-// 	if err = k.kp.Produce(&kafka.Message{
-// 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-// 		Value:          serialized,
-// 	}, nil); err != nil {
-// 		return errors.Wrap(entities.ErrKafkaProduce, err.Error())
-// 	}
+	"github.com/TomasCruz/users/internal/entities"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/pkg/errors"
+)
 
-// 	k.kp.Flush(100)
+func (k kafkaMsg) PublishUserModification(resp entities.UserResp, topic string) error {
+	serialized, err := json.Marshal(resp)
+	if err != nil {
+		return errors.WithStack(err)
+	}
 
-// 	return nil
-// }
+	if err = k.kp.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Value:          serialized,
+	}, nil); err != nil {
+		return errors.Wrap(entities.ErrKafkaProduce, err.Error())
+	}
+
+	k.kp.Flush(100)
+
+	return nil
+}

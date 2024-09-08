@@ -1,4 +1,19 @@
 definitions:
+  entities.CreateUserReq:
+    properties:
+      country:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      nick_name:
+        type: string
+      pswd_hash:
+        type: string
+    type: object
   entities.ErrResp:
     properties:
       errorMessage:
@@ -87,6 +102,40 @@ paths:
           schema:
             $ref: '#/definitions/entities.ErrResp'
       summary: list users
+    put:
+      description: creates user
+      operationId: create-user
+      parameters:
+      - description: Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/entities.CreateUserReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User details
+          schema:
+            $ref: '#/definitions/entities.UserResp'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+        "409":
+          description: Existing email
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+        "424":
+          description: Database or Kafka Error
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.ErrResp'
+      summary: creates user
   /users/{user-id}:
     get:
       description: gets user details
