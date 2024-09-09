@@ -220,9 +220,6 @@ const docTemplate = `{
                 "last_name": {
                     "type": "string"
                 },
-                "nick_name": {
-                    "type": "string"
-                },
                 "pswd_hash": {
                     "type": "string"
                 }
