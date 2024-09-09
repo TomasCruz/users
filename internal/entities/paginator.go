@@ -2,7 +2,6 @@ package entities
 
 import (
 	"fmt"
-	"net/url"
 	"strconv"
 	"strings"
 )
@@ -12,7 +11,7 @@ type Paginator struct {
 	PageNumber int
 }
 
-func ExtractPagination(values url.Values, defaultPageSize, defaultPageNumber *int) (int, int) {
+func ExtractPagination(values map[string][]string, defaultPageSize, defaultPageNumber *int) (int, int) {
 	var pageSize int
 	var pageNumber int
 
