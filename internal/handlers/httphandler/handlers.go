@@ -80,7 +80,7 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 // @Router /users [get]
 func (h HTTPHandler) ListUserHandler(c echo.Context) error {
 	values := c.QueryParams()
-	filter := entities.ExtractFilter(values)
+	filter := entities.ExtractFilterFromQueryParams(values)
 	userFilter := entities.ExtractUserFilter(filter)
 	pageSize, pageNumber := entities.ExtractPagination(filter, nil, nil)
 

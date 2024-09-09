@@ -2,10 +2,11 @@ package entities
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 )
 
-func ExtractFilter(values map[string][]string) map[string][]string {
+func ExtractFilterFromQueryParams(values url.Values) map[string][]string {
 	filter := map[string][]string{}
 
 	// extract filter
@@ -15,19 +16,25 @@ func ExtractFilter(values map[string][]string) map[string][]string {
 			if strings.Contains(uv, ",") {
 				currValues := strings.Split(uv, ",")
 				for _, vs := range currValues {
-					valueSet[vs] = struct{}{}
+					if vs != "" {
+						valueSet[vs] = struct{}{}
+					}
 				}
 			} else {
-				valueSet[uv] = struct{}{}
+				if uv != "" {
+					valueSet[uv] = struct{}{}
+				}
 			}
 		}
 
-		values := []string{}
+		var values []string
 		for v := range valueSet {
 			values = append(values, v)
 		}
 
-		filter[k] = values
+		if values != nil {
+			filter[k] = values
+		}
 	}
 
 	return filter
