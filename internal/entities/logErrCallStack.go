@@ -1,4 +1,4 @@
-package errlog
+package entities
 
 import (
 	"fmt"
@@ -20,33 +20,33 @@ const (
 	FATAL
 )
 
-func Debug(err error, msg string) {
-	s := ToString(DEBUG, err, msg)
+func LogDebug(err error, msg string) {
+	s := LogToString(DEBUG, err, msg)
 	fmt.Print(s)
 }
 
-func Info(err error, msg string) {
-	s := ToString(INFO, err, msg)
+func LogInfo(err error, msg string) {
+	s := LogToString(INFO, err, msg)
 	fmt.Print(s)
 }
 
-func Warn(err error, msg string) {
-	s := ToString(WARN, err, msg)
+func LogWarn(err error, msg string) {
+	s := LogToString(WARN, err, msg)
 	fmt.Print(s)
 }
 
-func Error(err error, msg string) {
-	s := ToString(ERROR, err, msg)
+func LogError(err error, msg string) {
+	s := LogToString(ERROR, err, msg)
 	fmt.Print(s)
 }
 
-func Fatal(err error, msg string) {
-	s := ToString(FATAL, err, msg)
+func LogFatal(err error, msg string) {
+	s := LogToString(FATAL, err, msg)
 	fmt.Print(s)
 	os.Exit(1)
 }
 
-func ToString(level LogLvl, err error, msg string) string {
+func LogToString(level LogLvl, err error, msg string) string {
 	var sb strings.Builder
 
 	sb.WriteString(logLvlToString(level))

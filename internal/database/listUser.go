@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/TomasCruz/users/internal/entities"
-	"github.com/TomasCruz/users/utils"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
@@ -32,14 +31,14 @@ func (pDB postgresDB) resultCountQuery(filteredQuery string, args []interface{})
 
 func (pDB postgresDB) ListUser(filter map[string][]string, pageSize, pageNumber int) ([]entities.User, int64, error) {
 	basicQuery, orderByQuery, parameterNames := pDB.queriesAndParameterNamesForListUser()
-	filteredQuery, args := utils.BuildFilteredPostgresQuery(basicQuery, filter, parameterNames)
+	filteredQuery, args := entities.BuildFilteredPostgresQuery(basicQuery, filter, parameterNames)
 
 	totalCount, err := pDB.resultCountQuery(filteredQuery, args)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	parametrizedQuery, limit, offset := utils.BuildPaginatedPostgresQuery(filteredQuery, orderByQuery, pageSize, pageNumber, len(args))
+	parametrizedQuery, limit, offset := entities.BuildPaginatedPostgresQuery(filteredQuery, orderByQuery, pageSize, pageNumber, len(args))
 	if limit != 0 {
 		args = append(args, limit, offset)
 	}

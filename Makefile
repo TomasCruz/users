@@ -45,7 +45,7 @@ mocks:
 
 .PHONY: test
 test: mocks docs fmt
-	go test -v -count=1 -tags test  ./...
+	go test -v -count=1 -tags unit  ./...
 
 .PHONY: intdeps_up
 intdeps_up:

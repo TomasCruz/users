@@ -5,7 +5,6 @@ import (
 	"net/mail"
 
 	"github.com/TomasCruz/users/internal/entities"
-	"github.com/TomasCruz/users/utils/errlog"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -31,7 +30,7 @@ func (h HTTPHandler) validateCreateUser(req entities.CreateUserReq) error {
 	countryLength := len(req.Country)
 	if countryLength != 3 && countryLength != 2 {
 		err := errors.WithStack(entities.ErrCountryLength)
-		errlog.Error(err, fmt.Sprintf("wrong country length %d", countryLength))
+		entities.LogError(err, fmt.Sprintf("wrong country length %d", countryLength))
 		return err
 	}
 
@@ -66,7 +65,7 @@ func (h HTTPHandler) validateCreateUser(req entities.CreateUserReq) error {
 // 	countryLength := len(req.Country)
 // 	if countryLength != 3 && countryLength != 2 {
 // 		err := errors.WithStack(entities.ErrCountryLength)
-// 		errlog.Error(err, fmt.Sprintf("wrong country length %d", strconv.Itoa(countryLength)))
+// 		entities.LogError(err, fmt.Sprintf("wrong country length %d", strconv.Itoa(countryLength)))
 // 		return err
 // 	}
 

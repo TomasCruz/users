@@ -8,8 +8,6 @@ import (
 	"strconv"
 
 	"github.com/TomasCruz/users/internal/entities"
-	"github.com/TomasCruz/users/utils"
-	"github.com/TomasCruz/users/utils/errlog"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,7 +21,7 @@ import (
 func (h HTTPHandler) HealthHandler(c echo.Context) error {
 	err := h.cr.Health()
 	if err != nil {
-		errlog.Error(err, "HTTPHandler.HealthHandler")
+		entities.LogError(err, "HTTPHandler.HealthHandler")
 		return errorResponse(c, http.StatusInternalServerError, err, "")
 	}
 
@@ -51,7 +49,7 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 
 	user, err := h.cr.GetUserByID(userID)
 	if err != nil {
-		errlog.Error(err, "HTTPHandler.GetUserHandler")
+		entities.LogError(err, "HTTPHandler.GetUserHandler")
 
 		switch {
 		case errors.Is(err, entities.ErrNonexistingUser):
@@ -82,13 +80,13 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 // @Router /users [get]
 func (h HTTPHandler) ListUserHandler(c echo.Context) error {
 	values := c.QueryParams()
-	filter := utils.ExtractFilter(values)
+	filter := entities.ExtractFilter(values)
 	userFilter := entities.ExtractUserFilter(filter)
-	pageSize, pageNumber := utils.ExtractPagination(values, nil, nil)
+	pageSize, pageNumber := entities.ExtractPagination(filter, nil, nil)
 
 	users, totalCount, err := h.cr.ListUser(userFilter, pageSize, pageNumber)
 	if err != nil {
-		errlog.Error(err, "HTTPHandler.ListUserHandler")
+		entities.LogError(err, "HTTPHandler.ListUserHandler")
 
 		switch {
 		case errors.Is(err, entities.ErrListUser):
@@ -142,7 +140,7 @@ func (h HTTPHandler) CreateUserHandler(c echo.Context) error {
 
 	resp, err := h.cr.CreateUser(req)
 	if err != nil {
-		errlog.Error(err, "HTTPHandler.CreateUserHandler")
+		entities.LogError(err, "HTTPHandler.CreateUserHandler")
 
 		switch {
 		case errors.Is(err, entities.ErrBadEmail):

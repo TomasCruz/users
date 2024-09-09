@@ -7,9 +7,9 @@ import (
 	"github.com/TomasCruz/users/internal/configuration"
 	"github.com/TomasCruz/users/internal/core"
 	"github.com/TomasCruz/users/internal/database"
+	"github.com/TomasCruz/users/internal/entities"
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/msg"
-	"github.com/TomasCruz/users/utils/errlog"
 	"github.com/labstack/echo/v4"
 )
 
@@ -27,20 +27,20 @@ func (application *App) Start() {
 
 	config, err := ConfigFromEnvVars(application.EnvFile)
 	if err != nil {
-		errlog.Fatal(err, "failed to read environment variables")
+		entities.LogFatal(err, "failed to read environment variables")
 	}
 	application.Config = config
 
 	// init DB
 	db, err := database.InitDB(config)
 	if err != nil {
-		errlog.Fatal(err, "failed to initialize database")
+		entities.LogFatal(err, "failed to initialize database")
 	}
 
 	// Kafka producer
 	msg, err := msg.InitMsg(config)
 	if err != nil {
-		errlog.Fatal(err, "failed to create Kafka producer")
+		entities.LogFatal(err, "failed to create Kafka producer")
 	}
 
 	// new Core
@@ -67,7 +67,7 @@ func gracefulShutdown(db core.DB, msg core.Msg, h httphandler.HTTPHandler) {
 	// Echo
 	err := h.Close()
 	if err != nil {
-		errlog.Error(err, "Echo Close failed")
+		entities.LogError(err, "Echo Close failed")
 	}
 
 	// Kafka
@@ -76,6 +76,6 @@ func gracefulShutdown(db core.DB, msg core.Msg, h httphandler.HTTPHandler) {
 	// DB
 	err = db.Close()
 	if err != nil {
-		errlog.Error(err, "DB Close failed")
+		entities.LogError(err, "DB Close failed")
 	}
 }
