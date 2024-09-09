@@ -27,7 +27,7 @@ psql:
 	docker run -it --rm --link pgdb:postgres --net users_default -e POSTGRES_USER=toma -e POSTGRES_PASSWORD=pswd -p 5351 postgres psql postgresql://toma:pswd@pgdb
 
 qpsql:
-	docker run -it --rm --link pgdb:postgres --net users_default_test -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test -p 15351 postgres psql postgresql://test:test@pgdb_test
+	docker run -it --rm --link pgdb_test:postgres --net users_default_test -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test -p 15351 postgres psql postgresql://test:test@pgdb_test
 
 topics:
 	docker compose exec kafka kafka-topics --create --topic user-created --partitions 1 --replication-factor 1 --bootstrap-server kafka:9092
