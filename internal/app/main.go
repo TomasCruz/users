@@ -29,6 +29,7 @@ func (application *App) Start() {
 	if err != nil {
 		entities.LogFatal(err, "failed to read environment variables")
 	}
+	entities.LogDebug(nil, config.String())
 	application.Config = config
 
 	// init DB

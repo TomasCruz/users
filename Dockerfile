@@ -1,8 +1,8 @@
 FROM golang:1.23
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
 COPY . .
-RUN go build -o /app/server .
+COPY .env .
+RUN go mod download
+RUN go build -o /app/bin/server cmd/*
 EXPOSE 8091
-CMD ["/app/server"]
+CMD ["/app/bin/server"]

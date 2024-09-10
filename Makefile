@@ -62,10 +62,17 @@ intdeps_down:
 .PHONY: integration
 integration: intdeps_up inttests intdeps_down
 
-# docker compose exec -T kafka_test kafka-console-producer --bootstrap-server localhost:19092 --topic user-created < Makefile
-# docker compose exec kafka_test kafka-console-consumer --bootstrap-server localhost:19092 --topic user-created --from-beginning
-
 # docs
 .PHONY: docs
 docs:
 	swag init -g ./cmd/main.go -o ./docs/
+
+# Docker stuff
+img:
+	docker build --tag dock-users .
+
+bshimg:
+	docker run -it dock-users bash
+
+drun:
+	docker run --net host dock-users

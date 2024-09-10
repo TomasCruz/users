@@ -6,16 +6,11 @@ import (
 	"strings"
 )
 
-type Paginator struct {
-	PageSize   int
-	PageNumber int
-}
-
 func ExtractPagination(values map[string][]string, defaultPageSize, defaultPageNumber *int) (int, int) {
 	var pageSize int
 	var pageNumber int
 
-	// extract paginator
+	// extract pagination
 	for k, urlValue := range values {
 		switch k {
 		case "page-size":

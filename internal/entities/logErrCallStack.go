@@ -55,12 +55,15 @@ func LogToString(level LogLvl, err error, msg string) string {
 	sb.WriteRune(' ')
 
 	if msg != "" {
-		sb.WriteString(fmt.Sprintf("%s:\n\t", msg))
+		sb.WriteString(msg)
 	}
 
-	sb.WriteString(err.Error())
-	sb.WriteRune('\n')
-	sb.WriteString(errStackToString(err))
+	if err != nil {
+		sb.WriteString(":\n\t")
+		sb.WriteString(err.Error())
+		sb.WriteRune('\n')
+		sb.WriteString(errStackToString(err))
+	}
 
 	return sb.String()
 }
