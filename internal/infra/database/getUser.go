@@ -47,7 +47,7 @@ func (pDB postgresDB) GetUserByID(userID uuid.UUID) (entities.User, error) {
 	}, nil
 }
 
-func (pDB postgresDB) getUserByEmail(email string) (entities.User, error) {
+func (pDB postgresDB) GetUserByEmail(email string) (entities.User, error) {
 	var (
 		userID    uuid.UUID
 		firstName string

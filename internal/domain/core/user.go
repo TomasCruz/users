@@ -27,15 +27,21 @@ func (c Core) ListUser(filter map[string]map[string]struct{}, pageSize, pageNumb
 }
 
 func (c Core) CreateUser(req entities.UserDTO) (entities.User, error) {
+	if _, err := c.db.GetUserByEmail(*req.Email); err != nil {
+		// ignore no rows error
+		if !errors.Is(err, entities.ErrNonexistingUser) {
+			return entities.User{}, err
+		}
+	} else {
+		// no error, user found by email
+		return entities.User{}, entities.ErrExistingEmail
+	}
+
 	userID := uuid.New()
 	now := time.Now().UTC()
 
 	user, err := c.db.CreateUser(userID, *req.FirstName, *req.LastName, *req.PswdHash, *req.Email, *req.Country, now, now)
 	if err != nil {
-		if errors.Is(err, entities.ErrExistingEmail) {
-			return entities.User{}, err
-		}
-
 		return entities.User{}, err
 	}
 
