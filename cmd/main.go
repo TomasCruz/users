@@ -1,6 +1,6 @@
 package main
 
-import "github.com/TomasCruz/users/internal/app"
+import "github.com/TomasCruz/users/internal/infra/app"
 
 // @title Users
 // @version 1.0
