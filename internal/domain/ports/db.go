@@ -12,7 +12,7 @@ import (
 type DB interface {
 	io.Closer
 	Health() error
-	CreateUser(userID uuid.UUID, firstName, lastName, pswdHash, email, country string, createdAt, updatedAt time.Time) (entities.User, error)
+	CreateUser(req entities.UserDTO, userID uuid.UUID, createdAt, updatedAt time.Time) (entities.User, error)
 	GetUserByID(userID uuid.UUID) (entities.User, error)
 	GetUserByEmail(email string) (entities.User, error)
 	ListUser(filter entities.UserFilter, pageSize, pageNumber int) ([]entities.User, int64, error)

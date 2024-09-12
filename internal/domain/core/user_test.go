@@ -144,7 +144,7 @@ func Test_CreateUser(t *testing.T) {
 				Return(entities.User{}, tt.getUserByEmailErr)
 
 			if tt.sholudCreateUser {
-				db.On("CreateUser", mock.AnythingOfType("uuid.UUID"), *tt.req.FirstName, *tt.req.LastName, *tt.req.PswdHash, *tt.req.Email, *tt.req.Country, mock.AnythingOfType("time.Time"), mock.AnythingOfType("time.Time")).
+				db.On("CreateUser", req, mock.AnythingOfType("uuid.UUID"), mock.AnythingOfType("time.Time"), mock.AnythingOfType("time.Time")).
 					Return(tt.createdUser, tt.createUserErr)
 			}
 

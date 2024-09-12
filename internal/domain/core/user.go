@@ -40,7 +40,7 @@ func (cr Core) CreateUser(req entities.UserDTO) (entities.User, error) {
 	userID := uuid.New()
 	now := time.Now().UTC()
 
-	user, err := cr.db.CreateUser(userID, *req.FirstName, *req.LastName, *req.PswdHash, *req.Email, *req.Country, now, now)
+	user, err := cr.db.CreateUser(req, userID, now, now)
 	if err != nil {
 		return entities.User{}, err
 	}

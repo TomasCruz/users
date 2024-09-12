@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (pDB postgresDB) CreateUser(userID uuid.UUID, firstName, lastName, pswdHash, email, country string, createdAt, updatedAt time.Time) (entities.User, error) {
+func (pDB postgresDB) CreateUser(req entities.UserDTO, userID uuid.UUID, createdAt, updatedAt time.Time) (entities.User, error) {
 	pTx, err := pDB.newTransaction()
 	if err != nil {
 		return entities.User{}, err
@@ -24,17 +24,17 @@ func (pDB postgresDB) CreateUser(userID uuid.UUID, firstName, lastName, pswdHash
 	}
 	defer stmt.Close()
 
-	if _, err := stmt.Exec(userID, firstName, lastName, pswdHash, email, country, createdAt, updatedAt); err != nil {
+	if _, err := stmt.Exec(userID, *req.FirstName, *req.LastName, *req.PswdHash, *req.Email, *req.Country, createdAt, updatedAt); err != nil {
 		return entities.User{}, errors.WithStack(err)
 	}
 
 	return entities.User{
 		UserID:    userID,
-		FirstName: firstName,
-		LastName:  lastName,
-		PswdHash:  pswdHash,
-		Email:     email,
-		Country:   country,
+		FirstName: *req.FirstName,
+		LastName:  *req.LastName,
+		PswdHash:  *req.PswdHash,
+		Email:     *req.Email,
+		Country:   *req.Country,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}, nil
