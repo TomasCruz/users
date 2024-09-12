@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/core/entities"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
@@ -16,7 +16,7 @@ func (pDB postgresDB) queriesAndParameterNamesForListUser() (string, string, map
 	return basicQuery, "", parameterNames
 }
 
-func (pDB postgresDB) ListUser(filter map[string]map[string]struct{}, pageSize, pageNumber int) ([]entities.User, int64, error) {
+func (pDB postgresDB) ListUser(filter entities.UserFilter, pageSize, pageNumber int) ([]entities.User, int64, error) {
 	basicQuery, orderByQuery, parameterNames := pDB.queriesAndParameterNamesForListUser()
 	filteredQuery, args := buildFilteredQuery(basicQuery, filter, parameterNames)
 

@@ -1,4 +1,4 @@
-package adapters
+package entities
 
 import (
 	"strconv"
@@ -35,10 +35,10 @@ func ExtractPagination(values map[string]map[string]struct{}, defaultPageSize, d
 	// for invalid pagination values
 	if pageSize <= 0 || pageNumber <= 0 {
 		if defaultPageSize != nil && defaultPageNumber != nil {
-			// use default
+			// if there's default, use it
 			return *defaultPageSize, *defaultPageNumber
 		} else {
-			// don't apply pagination
+			// else don't apply pagination
 			return 0, 0
 		}
 	}

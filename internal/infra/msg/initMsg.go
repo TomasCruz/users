@@ -1,7 +1,7 @@
 package msg
 
 import (
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/core/entities"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/pkg/errors"

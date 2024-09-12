@@ -3,7 +3,7 @@ package httphandler
 import (
 	"time"
 
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/core/entities"
 	"github.com/google/uuid"
 )
 

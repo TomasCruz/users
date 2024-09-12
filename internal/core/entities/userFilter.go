@@ -1,4 +1,6 @@
-package adapters
+package entities
+
+type UserFilter map[string]map[string]struct{}
 
 func ExtractUserFilter(filter map[string]map[string]struct{}) map[string]map[string]struct{} {
 	// extract filter
