@@ -33,7 +33,7 @@ func (cr Core) CreateUser(req entities.UserDTO) (entities.User, error) {
 			return entities.User{}, err
 		}
 	} else {
-		// no error, user found by email
+		// user found by email
 		return entities.User{}, entities.ErrExistingEmail
 	}
 

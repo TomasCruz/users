@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// DB is an interface through which to talk with DB
 type DB interface {
 	io.Closer
 	Health() error
