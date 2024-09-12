@@ -62,6 +62,7 @@ func (p printLogger) logToString(level ports.LogLvl, err error, msg string) stri
 	sb.WriteRune('\n')
 
 	if msg != "" {
+		sb.WriteRune('\t')
 		sb.WriteString(msg)
 	}
 

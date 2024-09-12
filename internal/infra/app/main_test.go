@@ -15,7 +15,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/TomasCruz/users/internal/adapters/httphandler"
+	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 
 	"github.com/google/uuid"

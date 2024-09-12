@@ -5,9 +5,9 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/TomasCruz/users/internal/adapters/httphandler"
 	"github.com/TomasCruz/users/internal/domain/core"
 	"github.com/TomasCruz/users/internal/domain/ports"
+	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/TomasCruz/users/internal/infra/database"
 	"github.com/TomasCruz/users/internal/infra/log"
