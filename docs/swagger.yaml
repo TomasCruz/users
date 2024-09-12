@@ -1,5 +1,5 @@
 definitions:
-  entities.CreateUserReq:
+  httphandler.CreateUserReq:
     properties:
       country:
         type: string
@@ -12,13 +12,13 @@ definitions:
       pswd_hash:
         type: string
     type: object
-  entities.ErrResp:
+  httphandler.ErrResp:
     properties:
       errorMessage:
         example: A horrible, terrible, absolutely awful error
         type: string
     type: object
-  entities.UserResp:
+  httphandler.UserResp:
     properties:
       country:
         type: string
@@ -59,7 +59,7 @@ paths:
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
       summary: health check
   /users:
     get:
@@ -85,20 +85,20 @@ paths:
           description: User detail list
           schema:
             items:
-              $ref: '#/definitions/entities.UserResp'
+              $ref: '#/definitions/httphandler.UserResp'
             type: array
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
         "424":
           description: Database Error
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
       summary: list users
     put:
       description: creates user
@@ -109,30 +109,30 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/entities.CreateUserReq'
+          $ref: '#/definitions/httphandler.CreateUserReq'
       produces:
       - application/json
       responses:
         "201":
           description: User details
           schema:
-            $ref: '#/definitions/entities.UserResp'
+            $ref: '#/definitions/httphandler.UserResp'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
         "409":
           description: Existing email
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
         "424":
           description: Database or Kafka Error
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
       summary: creates user
   /users/{user-id}:
     get:
@@ -150,22 +150,22 @@ paths:
         "200":
           description: User details
           schema:
-            $ref: '#/definitions/entities.UserResp'
+            $ref: '#/definitions/httphandler.UserResp'
         "400":
           description: Bad ID
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
         "404":
           description: Not found
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
         "424":
           description: Database Error
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/entities.ErrResp'
+            $ref: '#/definitions/httphandler.ErrResp'
       summary: gets user
 swagger: "2.0"

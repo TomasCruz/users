@@ -16,7 +16,7 @@ import (
 // @ID health
 // @Produce	json
 // @Success			204 																"Healthy"
-// @Failure			500				{object}		entities.ErrResp					"Internal server error"
+// @Failure			500				{object}		httphandler.ErrResp					"Internal server error"
 // @Router /health [get]
 func (h HTTPHandler) HealthHandler(c echo.Context) error {
 	err := h.cr.Health()
@@ -34,11 +34,11 @@ func (h HTTPHandler) HealthHandler(c echo.Context) error {
 // @ID get-user
 // @Produce json
 // @Param			user-id			path			string					true		"User id"
-// @Success			200 			{object}		entities.UserResp					"User details"
-// @Failure			400				{object}		entities.ErrResp					"Bad ID"
-// @Failure			404				{object}		entities.ErrResp					"Not found"
-// @Failure			424				{object}		entities.ErrResp					"Database Error"
-// @Failure			500				{object}		entities.ErrResp					"Internal server error"
+// @Success			200 			{object}		httphandler.UserResp				"User details"
+// @Failure			400				{object}		httphandler.ErrResp					"Bad ID"
+// @Failure			404				{object}		httphandler.ErrResp					"Not found"
+// @Failure			424				{object}		httphandler.ErrResp					"Database Error"
+// @Failure			500				{object}		httphandler.ErrResp					"Internal server error"
 // @Router /users/{user-id} [get]
 func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 	uuidString := c.Param("user-id")
@@ -73,10 +73,10 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 // @Param			country			query			string					false		"Country"
 // @Param			page-size		query			string					false		"Page size"
 // @Param			page-number		query			string					false		"Page number"
-// @Success			200 			{array}			entities.UserResp					"User detail list"
-// @Failure			400				{object}		entities.ErrResp					"Bad request"
-// @Failure			424				{object}		entities.ErrResp					"Database Error"
-// @Failure			500				{object}		entities.ErrResp					"Internal server error"
+// @Success			200 			{array}			httphandler.UserResp				"User detail list"
+// @Failure			400				{object}		httphandler.ErrResp					"Bad request"
+// @Failure			424				{object}		httphandler.ErrResp					"Database Error"
+// @Failure			500				{object}		httphandler.ErrResp					"Internal server error"
 // @Router /users [get]
 func (h HTTPHandler) ListUserHandler(c echo.Context) error {
 	values := c.QueryParams()
@@ -115,12 +115,12 @@ func (h HTTPHandler) ListUserHandler(c echo.Context) error {
 // @ID create-user
 // @Consume	json
 // @Produce	json
-// @Param			payload			body			entities.CreateUserReq	true		"Payload"
-// @Success			201 			{object}		entities.UserResp					"User details"
-// @Failure			400				{object}		entities.ErrResp					"Bad request"
-// @Failure			409				{object}		entities.ErrResp					"Existing email"
-// @Failure			424				{object}		entities.ErrResp					"Database or Kafka Error"
-// @Failure			500				{object}		entities.ErrResp					"Internal server error"
+// @Param			payload			body			httphandler.CreateUserReq	true	"Payload"
+// @Success			201 			{object}		httphandler.UserResp				"User details"
+// @Failure			400				{object}		httphandler.ErrResp					"Bad request"
+// @Failure			409				{object}		httphandler.ErrResp					"Existing email"
+// @Failure			424				{object}		httphandler.ErrResp					"Database or Kafka Error"
+// @Failure			500				{object}		httphandler.ErrResp					"Internal server error"
 // @Router /users [put]
 func (h HTTPHandler) CreateUserHandler(c echo.Context) error {
 	req := CreateUserReq{}

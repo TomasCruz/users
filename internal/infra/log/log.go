@@ -7,56 +7,56 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/domain/ports"
 	"github.com/pkg/errors"
 )
 
 type printLogger struct {
-	minLevel entities.LogLvl
+	minLevel ports.LogLvl
 }
 
-func New(minLevel entities.LogLvl) entities.Logger {
+func New(minLevel ports.LogLvl) ports.Logger {
 	return printLogger{minLevel: minLevel}
 }
 
 func (p printLogger) Debug(err error, msg string) {
-	if entities.DEBUG_LOG_LEVEL >= p.minLevel {
-		s := p.logToString(entities.DEBUG_LOG_LEVEL, err, msg)
+	if ports.DEBUG_LOG_LEVEL >= p.minLevel {
+		s := p.logToString(ports.DEBUG_LOG_LEVEL, err, msg)
 		fmt.Print(s)
 	}
 }
 
 func (p printLogger) Info(err error, msg string) {
-	if entities.INFO_LOG_LEVEL >= p.minLevel {
-		s := p.logToString(entities.INFO_LOG_LEVEL, err, msg)
+	if ports.INFO_LOG_LEVEL >= p.minLevel {
+		s := p.logToString(ports.INFO_LOG_LEVEL, err, msg)
 		fmt.Print(s)
 	}
 }
 
 func (p printLogger) Warn(err error, msg string) {
-	if entities.WARN_LOG_LEVEL >= p.minLevel {
-		s := p.logToString(entities.WARN_LOG_LEVEL, err, msg)
+	if ports.WARN_LOG_LEVEL >= p.minLevel {
+		s := p.logToString(ports.WARN_LOG_LEVEL, err, msg)
 		fmt.Print(s)
 	}
 }
 
 func (p printLogger) Error(err error, msg string) {
-	if entities.ERROR_LOG_LEVEL >= p.minLevel {
-		s := p.logToString(entities.ERROR_LOG_LEVEL, err, msg)
+	if ports.ERROR_LOG_LEVEL >= p.minLevel {
+		s := p.logToString(ports.ERROR_LOG_LEVEL, err, msg)
 		fmt.Print(s)
 	}
 }
 
 func (p printLogger) Fatal(err error, msg string) {
-	s := p.logToString(entities.FATAL_LOG_LEVEL, err, msg)
+	s := p.logToString(ports.FATAL_LOG_LEVEL, err, msg)
 	fmt.Print(s)
 	os.Exit(1)
 }
 
-func (p printLogger) logToString(level entities.LogLvl, err error, msg string) string {
+func (p printLogger) logToString(level ports.LogLvl, err error, msg string) string {
 	var sb strings.Builder
 
-	sb.WriteString(entities.LogLvlToString(level))
+	sb.WriteString(ports.LogLvlToString(level))
 	sb.WriteRune(' ')
 	sb.WriteString(time.Now().Format("2006-01-02 15:04:05.000"))
 	sb.WriteRune('\n')

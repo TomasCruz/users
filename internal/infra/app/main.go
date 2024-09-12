@@ -7,7 +7,7 @@ import (
 
 	"github.com/TomasCruz/users/internal/adapters/httphandler"
 	"github.com/TomasCruz/users/internal/domain/core"
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/domain/ports"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/TomasCruz/users/internal/infra/database"
 	"github.com/TomasCruz/users/internal/infra/log"
@@ -32,7 +32,7 @@ func (a *App) Start() {
 		l2.Fatal("failed to read environment variables", err)
 	}
 
-	logger := log.New(entities.StringToLogLvl(config.MinLogLevel))
+	logger := log.New(ports.StringToLogLvl(config.MinLogLevel))
 	logger.Debug(nil, config.String())
 	a.Config = config
 
@@ -68,7 +68,7 @@ func (a *App) Start() {
 	gracefulShutdown(db, msg, h, logger)
 }
 
-func gracefulShutdown(db entities.DB, msg entities.Msg, h httphandler.HTTPHandler, logger entities.Logger) {
+func gracefulShutdown(db ports.DB, msg ports.Msg, h httphandler.HTTPHandler, logger ports.Logger) {
 	// Echo
 	err := h.Close()
 	if err != nil {

@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/domain/ports"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/pkg/errors"
 
@@ -15,7 +15,7 @@ import (
 )
 
 // InitDB does DB migrations and verifies DB accessibility
-func InitDB(config configuration.Config, logger entities.Logger) (entities.DB, error) {
+func InitDB(config configuration.Config, logger ports.Logger) (ports.DB, error) {
 	db, err := sql.Open("postgres", config.DBURL)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -75,7 +75,7 @@ func openAndCheck(dbString string) (*sql.DB, error) {
 type postgresDB struct {
 	db     *sql.DB
 	config configuration.Config
-	logger entities.Logger
+	logger ports.Logger
 }
 
 type postgresTx struct {

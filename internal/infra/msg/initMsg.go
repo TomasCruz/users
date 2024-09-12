@@ -1,13 +1,13 @@
 package msg
 
 import (
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/domain/ports"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/pkg/errors"
 )
 
-func InitMsg(config configuration.Config, logger entities.Logger) (entities.Msg, error) {
+func InitMsg(config configuration.Config, logger ports.Logger) (ports.Msg, error) {
 	var kp *kafka.Producer
 	var err error
 	if kp, err = kafka.NewProducer(&kafka.ConfigMap{
@@ -23,5 +23,5 @@ func InitMsg(config configuration.Config, logger entities.Logger) (entities.Msg,
 type kafkaMsg struct {
 	kp     *kafka.Producer
 	config configuration.Config
-	logger entities.Logger
+	logger ports.Logger
 }

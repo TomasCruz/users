@@ -36,7 +36,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     }
                 }
@@ -76,26 +76,26 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.UserResp"
+                                "$ref": "#/definitions/httphandler.UserResp"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     },
                     "424": {
                         "description": "Database Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     }
                 }
@@ -114,7 +114,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.CreateUserReq"
+                            "$ref": "#/definitions/httphandler.CreateUserReq"
                         }
                     }
                 ],
@@ -122,31 +122,31 @@ const docTemplate = `{
                     "201": {
                         "description": "User details",
                         "schema": {
-                            "$ref": "#/definitions/entities.UserResp"
+                            "$ref": "#/definitions/httphandler.UserResp"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     },
                     "409": {
                         "description": "Existing email",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     },
                     "424": {
                         "description": "Database or Kafka Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     }
                 }
@@ -173,31 +173,31 @@ const docTemplate = `{
                     "200": {
                         "description": "User details",
                         "schema": {
-                            "$ref": "#/definitions/entities.UserResp"
+                            "$ref": "#/definitions/httphandler.UserResp"
                         }
                     },
                     "400": {
                         "description": "Bad ID",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     },
                     "404": {
                         "description": "Not found",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     },
                     "424": {
                         "description": "Database Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrResp"
+                            "$ref": "#/definitions/httphandler.ErrResp"
                         }
                     }
                 }
@@ -205,7 +205,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "entities.CreateUserReq": {
+        "httphandler.CreateUserReq": {
             "type": "object",
             "properties": {
                 "country": {
@@ -225,7 +225,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.ErrResp": {
+        "httphandler.ErrResp": {
             "type": "object",
             "properties": {
                 "errorMessage": {
@@ -234,7 +234,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.UserResp": {
+        "httphandler.UserResp": {
             "type": "object",
             "properties": {
                 "country": {
