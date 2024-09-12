@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/TomasCruz/users/internal/core/entities"
+	"github.com/TomasCruz/users/internal/domain/entities"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,7 +19,7 @@ import (
 // @Failure			500				{object}		entities.ErrResp					"Internal server error"
 // @Router /health [get]
 func (h HTTPHandler) HealthHandler(c echo.Context) error {
-	err := h.svc.Health()
+	err := h.cr.Health()
 	if err != nil {
 		h.logger.Error(err, "HTTPHandler.HealthHandler")
 		return errorResponse(c, http.StatusInternalServerError, err, "")
@@ -47,7 +47,7 @@ func (h HTTPHandler) GetUserHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, ErrResp{Msg: err.Error()})
 	}
 
-	user, err := h.svc.GetUserByID(userID)
+	user, err := h.cr.GetUserByID(userID)
 	if err != nil {
 		h.logger.Error(err, "HTTPHandler.GetUserHandler")
 
@@ -84,7 +84,7 @@ func (h HTTPHandler) ListUserHandler(c echo.Context) error {
 	userFilter := entities.ExtractUserFilter(filter)
 	pageSize, pageNumber := entities.ExtractPagination(filter, nil, nil)
 
-	users, totalCount, err := h.svc.ListUser(userFilter, pageSize, pageNumber)
+	users, totalCount, err := h.cr.ListUser(userFilter, pageSize, pageNumber)
 	if err != nil {
 		h.logger.Error(err, "HTTPHandler.ListUserHandler")
 
@@ -139,7 +139,7 @@ func (h HTTPHandler) CreateUserHandler(c echo.Context) error {
 	}
 
 	userDTO := userDTOFromCreateUserReq(req)
-	user, err := h.svc.CreateUser(userDTO)
+	user, err := h.cr.CreateUser(userDTO)
 	if err != nil {
 		h.logger.Error(err, "HTTPHandler.CreateUserHandler")
 

@@ -6,8 +6,8 @@ import (
 	"os/signal"
 
 	"github.com/TomasCruz/users/internal/adapters/httphandler"
-	"github.com/TomasCruz/users/internal/core/entities"
-	"github.com/TomasCruz/users/internal/core/service"
+	"github.com/TomasCruz/users/internal/domain/core"
+	"github.com/TomasCruz/users/internal/domain/entities"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/TomasCruz/users/internal/infra/database"
 	"github.com/TomasCruz/users/internal/infra/log"
@@ -49,11 +49,11 @@ func (a *App) Start() {
 	}
 
 	// new Service
-	svc := service.New(db, msg, logger)
+	s := core.New(db, msg, logger)
 
 	// init HTTP handler
 	e := echo.New()
-	h := httphandler.New(e, svc, config.Port, logger)
+	h := httphandler.New(e, s, config.Port, logger)
 
 	// notify about readiness
 	if a.ServerReady != nil {

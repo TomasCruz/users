@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/TomasCruz/users/internal/core/entities"
+	"github.com/TomasCruz/users/internal/domain/entities"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )

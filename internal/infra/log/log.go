@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TomasCruz/users/internal/core/entities"
+	"github.com/TomasCruz/users/internal/domain/entities"
 	"github.com/pkg/errors"
 )
 
