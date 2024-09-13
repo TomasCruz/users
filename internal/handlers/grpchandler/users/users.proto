@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+option go_package = "users/internal/handlers/grpchandler/users";
+
+message UserIDMsg {
+    string id = 1;
+}
+
+message UserMsg {
+    string id = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string pswdHash = 4;
+    string email = 5;
+    string country = 6;
+    google.protobuf.Timestamp createdAt = 7;
+    google.protobuf.Timestamp updatedAt = 8;
+}
+
+service Users {
+    rpc GetUserByID(UserIDMsg) returns (UserMsg) {}
+}

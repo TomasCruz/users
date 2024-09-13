@@ -7,6 +7,7 @@ import (
 
 	"github.com/TomasCruz/users/internal/domain/core"
 	"github.com/TomasCruz/users/internal/domain/ports"
+	"github.com/TomasCruz/users/internal/handlers/grpchandler"
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/TomasCruz/users/internal/infra/database"
@@ -32,6 +33,7 @@ func (a *App) Start() {
 		l2.Fatal("failed to read environment variables", err)
 	}
 
+	// init logger
 	logger := log.New(ports.StringToLogLvl(config.MinLogLevel))
 	logger.Debug(nil, config.String())
 	a.Config = config
@@ -49,11 +51,14 @@ func (a *App) Start() {
 	}
 
 	// new Service
-	s := core.New(db, msg, logger)
+	cr := core.New(db, msg, logger)
 
 	// init HTTP handler
 	e := echo.New()
-	h := httphandler.New(e, s, config.Port, logger)
+	h := httphandler.New(e, config.Port, cr, logger)
+
+	// init gRPC handler
+	g := grpchandler.New(config.GRPCPort, cr, logger)
 
 	// notify about readiness
 	if a.ServerReady != nil {
@@ -65,15 +70,18 @@ func (a *App) Start() {
 	signal.Notify(stop, os.Interrupt)
 
 	<-stop
-	gracefulShutdown(db, msg, h, logger)
+	gracefulShutdown(db, msg, h, g, logger)
 }
 
-func gracefulShutdown(db ports.DB, msg ports.Msg, h httphandler.HTTPHandler, logger ports.Logger) {
+func gracefulShutdown(db ports.DB, msg ports.Msg, h httphandler.HTTPHandler, g *grpchandler.GRPCHandler, logger ports.Logger) {
 	// Echo
 	err := h.Close()
 	if err != nil {
 		logger.Error(err, "Echo Close failed")
 	}
+
+	// gRPC
+	g.Close()
 
 	// Kafka
 	msg.Close()

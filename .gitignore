@@ -19,3 +19,6 @@ tests/mocks/*
 # Go workspace file
 go.work
 go.work.sum
+
+# generated code
+internal/handlers/grpchandler/users/*.go

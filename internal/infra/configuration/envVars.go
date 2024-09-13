@@ -21,6 +21,11 @@ func ConfigFromEnvVars(envFile string) (Config, error) {
 		return Config{}, errors.WithStack(err)
 	}
 
+	gRPCPort, err := readAndCheckIntEnvVar("HEX_TEMPLATE_USERS_GRPC_PORT")
+	if err != nil {
+		return Config{}, errors.WithStack(err)
+	}
+
 	dbURL, err := readAndCheckEnvVar("HEX_TEMPLATE_USERS_DB_URL")
 	if err != nil {
 		return Config{}, errors.WithStack(err)
@@ -54,6 +59,7 @@ func ConfigFromEnvVars(envFile string) (Config, error) {
 	return Config{
 		MinLogLevel:     minLogLevel,
 		Port:            port,
+		GRPCPort:        gRPCPort,
 		DBURL:           dbURL,
 		DBMigrationPath: dbMigrationPath,
 		KafkaURL:        kafkaURL,

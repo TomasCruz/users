@@ -1,4 +1,4 @@
-all: clean build
+all: clean grpc build
 
 .PHONY: clean
 clean: fmt
@@ -41,7 +41,7 @@ list-topics:
 .PHONY: mocks
 mocks:
 	rm -f ./tests/mocks/*.go
-	CGO_ENABLED=1 /usr/local/go/bin/mockery --all --output ./tests/mocks --dir ./internal/
+	CGO_ENABLED=1 /usr/local/go/bin/mockery --all --output ./tests/mocks --dir ./internal/domain/
 
 .PHONY: test
 test: mocks docs fmt
@@ -76,3 +76,10 @@ bshimg:
 
 drun:
 	docker run --net host dock-users
+
+.PHONY: grpc
+grpc:
+	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative internal/handlers/grpchandler/users/users.proto
+
+gc_get:
+	grpcurl -plaintext -d '{"id":"b21c62dd-fdea-49c4-9bdc-9457e2d3cc38"}' localhost:4000 Users/GetUserByID

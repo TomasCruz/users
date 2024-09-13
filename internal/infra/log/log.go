@@ -59,15 +59,17 @@ func (p printLogger) logToString(level ports.LogLvl, err error, msg string) stri
 	sb.WriteString(ports.LogLvlToString(level))
 	sb.WriteRune(' ')
 	sb.WriteString(time.Now().Format("2006-01-02 15:04:05.000"))
-	sb.WriteRune('\n')
 
 	if msg != "" {
-		sb.WriteRune('\t')
+		sb.WriteString(" -\t")
 		sb.WriteString(msg)
+		sb.WriteRune('\n')
+	} else {
+		sb.WriteRune('\n')
 	}
 
 	if err != nil {
-		sb.WriteString(":\n\t")
+		sb.WriteRune('\t')
 		sb.WriteString(err.Error())
 		sb.WriteRune('\n')
 		sb.WriteString(errStackToString(err))
@@ -81,7 +83,7 @@ func errStackToString(err error) string {
 
 	calls := funcCalls(err)
 	for _, fc := range calls {
-		sb.WriteString(fmt.Sprintf("\t%s %d -\t%s\n", fc.fileName, fc.line, fc.funcName))
+		sb.WriteString(fmt.Sprintf("\t\t%s %d -\t%s\n", fc.fileName, fc.line, fc.funcName))
 	}
 
 	return sb.String()

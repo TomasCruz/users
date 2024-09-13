@@ -25,7 +25,7 @@ func LogLvlToString(level LogLvl) string {
 	case INFO_LOG_LEVEL:
 		return "INFO"
 	case WARN_LOG_LEVEL:
-		return "WARNING"
+		return "WARN"
 	case ERROR_LOG_LEVEL:
 		return "ERROR"
 	case FATAL_LOG_LEVEL:
@@ -41,7 +41,7 @@ func StringToLogLvl(lvl string) LogLvl {
 		return DEBUG_LOG_LEVEL
 	case "INFO":
 		return INFO_LOG_LEVEL
-	case "WARNING":
+	case "WARN":
 		return WARN_LOG_LEVEL
 	case "ERROR":
 		return ERROR_LOG_LEVEL

@@ -7,6 +7,7 @@ import (
 type Config struct {
 	MinLogLevel     string
 	Port            string
+	GRPCPort        string
 	DBURL           string
 	DBMigrationPath string
 	KafkaURL        string
@@ -24,6 +25,10 @@ func (c Config) String() string {
 
 	sb.WriteString("Port:\t\t\t")
 	sb.WriteString(c.Port)
+	sb.WriteRune('\n')
+
+	sb.WriteString("GRPCPort:\t\t\t")
+	sb.WriteString(c.GRPCPort)
 	sb.WriteRune('\n')
 
 	sb.WriteString("DBURL:\t\t\t")

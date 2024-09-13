@@ -15,11 +15,11 @@ type HTTPHandler struct {
 	logger ports.Logger
 }
 
-func New(e *echo.Echo, cr core.Core, port string, logger ports.Logger) HTTPHandler {
+func New(e *echo.Echo, port string, cr core.Core, logger ports.Logger) HTTPHandler {
 	httpHandler := HTTPHandler{e: e, cr: cr, logger: logger}
 	httpHandler.bindRoutes()
 
-	// fire up the server
+	// fire up the HTTP server
 	go func() {
 		err := e.Start(fmt.Sprintf(":%s", port))
 		if err != nil && err != http.ErrServerClosed {
