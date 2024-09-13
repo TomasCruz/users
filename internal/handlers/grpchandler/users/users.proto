@@ -3,11 +3,11 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 option go_package = "users/internal/handlers/grpchandler/users";
 
-message UserIDMsg {
+message UserIDReqMsg {
     string id = 1;
 }
 
-message UserMsg {
+message UserRespMsg {
     string id = 1;
     string firstName = 2;
     string lastName = 3;
@@ -18,6 +18,19 @@ message UserMsg {
     google.protobuf.Timestamp updatedAt = 8;
 }
 
+message ListUserReqMsg {
+    repeated string country = 1;
+    optional int64 pageSize = 2;
+    optional int64 pageNumber = 3;
+}
+
+message ListUserRespMsg {
+    repeated UserRespMsg users = 1;
+    int64 totalCount = 2;
+    int64 resultCount = 3;
+}
+
 service Users {
-    rpc GetUserByID(UserIDMsg) returns (UserMsg) {}
+    rpc GetUserByID(UserIDReqMsg) returns (UserRespMsg) {}
+    rpc ListUser(ListUserReqMsg) returns (ListUserRespMsg) {}
 }

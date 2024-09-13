@@ -83,3 +83,7 @@ grpc:
 
 gc_get:
 	grpcurl -plaintext -d '{"id":"b21c62dd-fdea-49c4-9bdc-9457e2d3cc38"}' localhost:4000 Users/GetUserByID
+
+gc_list:
+	grpcurl -plaintext localhost:4000 Users/ListUser
+	# grpcurl -plaintext -d '{"country": ["BIH", "BIH", "SRB", "BIH"], "pageSize": 10, "pageNumber": 1}' localhost:4000 Users/ListUser
