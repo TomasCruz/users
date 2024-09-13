@@ -6,10 +6,6 @@
 *.dylib
 bin/
 
-# Test binary, built with `go test -c`
-tests/mocks/*
-*.test
-
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
@@ -21,4 +17,5 @@ go.work
 go.work.sum
 
 # generated code
+tests/mocks/*
 internal/handlers/grpchandler/users/*.go
