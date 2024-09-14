@@ -45,13 +45,13 @@ func (a *App) Start() {
 	}
 
 	// Kafka producer
-	msg, err := msg.InitMsg(config, logger)
+	msgProducer, err := msg.InitProducer(config, logger)
 	if err != nil {
 		logger.Fatal(err, "failed to create Kafka producer")
 	}
 
 	// new Service
-	cr := core.New(db, msg, logger)
+	cr := core.New(db, msgProducer, logger)
 
 	// init HTTP handler
 	e := echo.New()
@@ -70,10 +70,12 @@ func (a *App) Start() {
 	signal.Notify(stop, os.Interrupt)
 
 	<-stop
-	gracefulShutdown(db, msg, h, g, logger)
+	gracefulShutdown(db, msgProducer, h, g, logger)
 }
 
-func gracefulShutdown(db ports.DB, msg ports.Msg, h httphandler.HTTPHandler, g *grpchandler.GRPCHandler, logger ports.Logger) {
+func gracefulShutdown(db ports.DB, msgProducer ports.MsgProducer, h httphandler.HTTPHandler, g *grpchandler.GRPCHandler, logger ports.Logger) {
+	logger.Info(nil, "app gracefully dying...")
+
 	// Echo
 	err := h.Close()
 	if err != nil {
@@ -84,7 +86,7 @@ func gracefulShutdown(db ports.DB, msg ports.Msg, h httphandler.HTTPHandler, g *
 	g.Close()
 
 	// Kafka
-	msg.Close()
+	msgProducer.Close()
 
 	// DB
 	err = db.Close()

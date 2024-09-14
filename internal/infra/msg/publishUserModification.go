@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (k kafkaMsg) PublishUserModification(user entities.User, modificationType entities.UserModification) error {
+func (k kafkaMsgProducer) PublishUserModification(user entities.User, modificationType entities.UserModification) error {
 	var topic string
 	switch modificationType {
 	case entities.CREATE_MODIFICATION:
@@ -21,7 +21,6 @@ func (k kafkaMsg) PublishUserModification(user entities.User, modificationType e
 		return errors.WithStack(entities.ErrBadMsgType)
 	}
 
-	// ErrBadMsgType
 	serialized, err := json.Marshal(user)
 	if err != nil {
 		return errors.WithStack(err)

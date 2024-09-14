@@ -7,7 +7,11 @@ clean: fmt
 
 .PHONY: build
 build:
-	CGO_ENABLED=1 go build -o bin/server cmd/*
+	CGO_ENABLED=1 go build -o bin/server cmd/app/*
+
+.PHONY: wbuild
+wbuild:
+	CGO_ENABLED=1 go build -o bin/worker cmd/worker/*
 
 .PHONY: deps_up
 deps_up:
@@ -19,6 +23,9 @@ deps_down:
 
 run:
 	bin/server
+
+wrun:
+	bin/worker
 
 fmt:
 	gofmt -l -w -e ./
@@ -65,7 +72,7 @@ integration: intdeps_up inttests intdeps_down
 # docs
 .PHONY: docs
 docs:
-	swag init -g ./cmd/main.go -o ./docs/
+	swag init -g ./cmd/app/main.go -o ./docs/
 
 # Docker stuff
 img:

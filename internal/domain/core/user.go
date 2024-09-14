@@ -45,7 +45,7 @@ func (cr Core) CreateUser(req entities.UserDTO) (entities.User, error) {
 		return entities.User{}, err
 	}
 
-	err = cr.msg.PublishUserModification(user, entities.CREATE_MODIFICATION)
+	err = cr.msgProducer.PublishUserModification(user, entities.CREATE_MODIFICATION)
 	if err != nil {
 		return entities.User{}, err
 	}

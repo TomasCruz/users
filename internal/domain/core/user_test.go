@@ -137,7 +137,7 @@ func Test_CreateUser(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			db := &mocks.DB{}
-			msg := &mocks.Msg{}
+			msg := &mocks.MsgProducer{}
 			logger := &mocks.Logger{}
 
 			db.On("GetUserByEmail", *tt.req.Email).
