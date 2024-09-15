@@ -56,5 +56,5 @@ func gracefulShutdown(msgConsumer ports.MsgConsumer, logger ports.Logger) {
 	// Kafka
 	msgConsumer.Close()
 
-	logger.Info(nil, "worker gracefulShutdown complete")
+	logger.Debug(nil, "worker gracefulShutdown complete")
 }

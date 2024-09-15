@@ -92,5 +92,5 @@ func gracefulShutdown(db ports.DB, msgProducer ports.MsgProducer, h httphandler.
 		logger.Error(err, "DB Close failed")
 	}
 
-	logger.Info(nil, "app gracefulShutdown complete")
+	logger.Debug(nil, "app gracefulShutdown complete")
 }
