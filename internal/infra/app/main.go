@@ -74,8 +74,6 @@ func (a *App) Start() {
 }
 
 func gracefulShutdown(db ports.DB, msgProducer ports.MsgProducer, h httphandler.HTTPHandler, g *grpchandler.GRPCHandler, logger ports.Logger) {
-	logger.Info(nil, "app gracefully dying...")
-
 	// Echo
 	err := h.Close()
 	if err != nil {
@@ -93,4 +91,6 @@ func gracefulShutdown(db ports.DB, msgProducer ports.MsgProducer, h httphandler.
 	if err != nil {
 		logger.Error(err, "DB Close failed")
 	}
+
+	logger.Info(nil, "app gracefulShutdown complete")
 }

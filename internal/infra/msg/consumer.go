@@ -8,40 +8,32 @@ import (
 )
 
 func (k *kafkaMsgConsumer) consume() {
-	defer func() { k.logger.Info(nil, "consumer gracefully dying..."); k.kc.Close() }()
+	for !k.shutdownReceived {
+		// Poll for Kafka messages
+		ev := k.kc.Poll(100)
+		if ev == nil {
+			continue
+		}
 
-	k.logger.Info(nil, "consumer happily consuming!")
-loop:
-	for {
-		select {
-		case <-k.shutdownReceived:
-			k.logger.Info(nil, "consumer gracefully dying 2...")
-			break loop
-		default:
-			// Poll for Kafka messages
-			ev := k.kc.Poll(100)
-			if ev == nil {
-				continue
-			}
-
-			switch eType := ev.(type) {
-			case *kafka.Message:
-				// Process the consumed message
-				topic := *eType.TopicPartition.Topic
-				switch topic {
-				case k.config.CreateUserTopic:
-					err := k.consumeUserMsg(topic, eType.Value)
-					if err != nil {
-						k.logger.Error(err, "ConsumeUserCreatedMsg")
-					}
+		switch eType := ev.(type) {
+		case *kafka.Message:
+			// Process the consumed message
+			topic := *eType.TopicPartition.Topic
+			switch topic {
+			case k.config.CreateUserTopic:
+				err := k.consumeUserMsg(topic, eType.Value)
+				if err != nil {
+					k.logger.Error(err, "ConsumeUserCreatedMsg")
 				}
-			case kafka.Error:
-				// Handle Kafka errors
-				k.logger.Error(nil, ev.String())
 			}
+		case kafka.Error:
+			// Handle Kafka errors
+			k.logger.Error(nil, ev.String())
 		}
 	}
-	k.logger.Info(nil, "consumer gracefully dying 3...")
+
+	k.kc.Close()
+	k.shutdownComplete <- struct{}{}
 }
 
 func (k *kafkaMsgConsumer) consumeUserMsg(topic string, userBytes []byte) error {

@@ -1,8 +1,6 @@
 package msg
 
 import (
-	"os"
-
 	"github.com/TomasCruz/users/internal/domain/core"
 	"github.com/TomasCruz/users/internal/domain/ports"
 	"github.com/TomasCruz/users/internal/infra/configuration"
@@ -21,7 +19,7 @@ func InitConsumer(config configuration.Config, cr core.Core, logger ports.Logger
 		return nil, err
 	}
 
-	consumer := kafkaMsgConsumer{kc: kc, config: config, cr: cr, logger: logger, shutdownReceived: make(chan os.Signal, 1)}
+	consumer := kafkaMsgConsumer{kc: kc, config: config, cr: cr, logger: logger, shutdownReceived: false, shutdownComplete: make(chan struct{}, 1)}
 
 	// Subscribe to the Kafka topic
 	err = consumer.kc.SubscribeTopics([]string{config.CreateUserTopic}, nil)
@@ -41,5 +39,6 @@ type kafkaMsgConsumer struct {
 	config           configuration.Config
 	cr               core.Core
 	logger           ports.Logger
-	shutdownReceived chan os.Signal
+	shutdownReceived bool
+	shutdownComplete chan struct{}
 }

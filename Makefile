@@ -3,14 +3,15 @@ all: clean grpc build
 .PHONY: clean
 clean: fmt
 	go clean
-	rm -f bin/*
 
 .PHONY: build
 build:
+	rm -f bin/app
 	CGO_ENABLED=1 go build -o bin/server cmd/app/*
 
 .PHONY: wbuild
 wbuild:
+	rm -f bin/worker
 	CGO_ENABLED=1 go build -o bin/worker cmd/worker/*
 
 .PHONY: deps_up

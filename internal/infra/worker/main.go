@@ -32,7 +32,7 @@ func (w *WorkerApp) Start() {
 
 	// init logger
 	logger := log.New(ports.StringToLogLvl(config.MinLogLevel))
-	logger.Info(nil, config.String())
+	logger.Debug(nil, config.String())
 	w.Config = config
 
 	// new Service
@@ -53,8 +53,8 @@ func (w *WorkerApp) Start() {
 }
 
 func gracefulShutdown(msgConsumer ports.MsgConsumer, logger ports.Logger) {
-	logger.Info(nil, "worker gracefully dying...")
-
 	// Kafka
 	msgConsumer.Close()
+
+	logger.Info(nil, "worker gracefulShutdown complete")
 }
