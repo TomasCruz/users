@@ -1,14 +1,14 @@
 //go:build unit
 // +build unit
 
-package core
+package app
 
 import (
 	"errors"
 	"testing"
 	"time"
 
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/core/entities"
 	"github.com/TomasCruz/users/tests"
 	"github.com/TomasCruz/users/tests/mocks"
 	"github.com/google/uuid"
@@ -153,8 +153,8 @@ func Test_CreateUser(t *testing.T) {
 					Return(tt.publishErr)
 			}
 
-			cr := New(db, msg, logger)
-			resultUser, err := cr.CreateUser(tt.req)
+			svc := NewAppUserService(db, msg, logger)
+			resultUser, err := svc.CreateUser(tt.req)
 
 			tests.AssertEqualError(t, tt.err, err, "should return expected error")
 			assert.Equal(t, tt.user, resultUser, "should return expected user FirstName")

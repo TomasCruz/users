@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/mail"
 
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/core/entities"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"

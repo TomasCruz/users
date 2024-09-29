@@ -8,15 +8,14 @@ import (
 	"github.com/TomasCruz/users/internal/infra/log"
 	"github.com/TomasCruz/users/internal/infra/msg"
 
-	"github.com/TomasCruz/users/internal/domain/core"
-	"github.com/TomasCruz/users/internal/domain/ports"
+	"github.com/TomasCruz/users/internal/core/ports"
+	"github.com/TomasCruz/users/internal/core/service/worker"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 )
 
 type WorkerApp struct {
 	EnvFile string
 	Config  configuration.Config
-	// kc      *kafka.Consumer
 }
 
 func (w *WorkerApp) Start() {
@@ -36,10 +35,10 @@ func (w *WorkerApp) Start() {
 	w.Config = config
 
 	// new Service
-	cr := core.New(nil, nil, logger)
+	svc := worker.NewWorkerUserService(logger)
 
 	// Kafka consumer
-	msgConsumer, err := msg.InitConsumer(config, cr, logger)
+	msgConsumer, err := msg.InitConsumer(config, svc, logger)
 	if err != nil {
 		logger.Fatal(err, "failed to create Kafka producer")
 	}

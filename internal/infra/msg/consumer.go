@@ -3,7 +3,7 @@ package msg
 import (
 	"encoding/json"
 
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/core/entities"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
@@ -45,7 +45,7 @@ func (k *kafkaMsgConsumer) consumeUserMsg(topic string, userBytes []byte) error 
 
 	switch topic {
 	case k.config.CreateUserTopic:
-		if err = k.cr.ConsumeUserCreatedMsg(user); err != nil {
+		if err = k.svc.ConsumeUserCreatedMsg(user); err != nil {
 			return err
 		}
 	}

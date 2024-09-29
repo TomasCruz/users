@@ -4,19 +4,19 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/TomasCruz/users/internal/domain/core"
-	"github.com/TomasCruz/users/internal/domain/ports"
+	"github.com/TomasCruz/users/internal/core/ports"
+	"github.com/TomasCruz/users/internal/core/service/app"
 	"github.com/labstack/echo/v4"
 )
 
 type HTTPHandler struct {
 	e      *echo.Echo
-	cr     core.Core
+	svc    app.AppUserService
 	logger ports.Logger
 }
 
-func New(e *echo.Echo, port string, cr core.Core, logger ports.Logger) HTTPHandler {
-	httpHandler := HTTPHandler{e: e, cr: cr, logger: logger}
+func New(e *echo.Echo, port string, svc app.AppUserService, logger ports.Logger) HTTPHandler {
+	httpHandler := HTTPHandler{e: e, svc: svc, logger: logger}
 	httpHandler.bindRoutes()
 
 	// fire up the HTTP server

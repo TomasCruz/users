@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TomasCruz/users/internal/domain/ports"
+	"github.com/TomasCruz/users/internal/core/ports"
 	"github.com/pkg/errors"
 )
 

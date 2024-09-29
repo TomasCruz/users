@@ -1,14 +1,14 @@
 package msg
 
 import (
-	"github.com/TomasCruz/users/internal/domain/core"
-	"github.com/TomasCruz/users/internal/domain/ports"
+	"github.com/TomasCruz/users/internal/core/ports"
+	"github.com/TomasCruz/users/internal/core/service/worker"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/pkg/errors"
 )
 
-func InitConsumer(config configuration.Config, cr core.Core, logger ports.Logger) (ports.MsgConsumer, error) {
+func InitConsumer(config configuration.Config, svc worker.WorkerUserService, logger ports.Logger) (ports.MsgConsumer, error) {
 	kc, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": config.KafkaURL,
 		"group.id":          "group.id",
@@ -19,7 +19,7 @@ func InitConsumer(config configuration.Config, cr core.Core, logger ports.Logger
 		return nil, err
 	}
 
-	consumer := kafkaMsgConsumer{kc: kc, config: config, cr: cr, logger: logger, shutdownReceived: false, shutdownComplete: make(chan struct{}, 1)}
+	consumer := kafkaMsgConsumer{kc: kc, config: config, svc: svc, logger: logger, shutdownReceived: false, shutdownComplete: make(chan struct{}, 1)}
 
 	// Subscribe to the Kafka topic
 	err = consumer.kc.SubscribeTopics([]string{config.CreateUserTopic}, nil)
@@ -37,7 +37,7 @@ func InitConsumer(config configuration.Config, cr core.Core, logger ports.Logger
 type kafkaMsgConsumer struct {
 	kc               *kafka.Consumer
 	config           configuration.Config
-	cr               core.Core
+	svc              worker.WorkerUserService
 	logger           ports.Logger
 	shutdownReceived bool
 	shutdownComplete chan struct{}

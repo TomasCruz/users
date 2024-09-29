@@ -49,7 +49,7 @@ list-topics:
 .PHONY: mocks
 mocks:
 	rm -f ./tests/mocks/*.go
-	CGO_ENABLED=1 /usr/local/go/bin/mockery --all --output ./tests/mocks --dir ./internal/domain/
+	CGO_ENABLED=1 /usr/local/go/bin/mockery --all --output ./tests/mocks --dir ./internal/core/
 
 .PHONY: test
 test: mocks docs fmt

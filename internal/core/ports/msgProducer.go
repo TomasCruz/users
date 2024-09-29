@@ -1,6 +1,6 @@
 package ports
 
-import "github.com/TomasCruz/users/internal/domain/entities"
+import "github.com/TomasCruz/users/internal/core/entities"
 
 type MsgProducer interface {
 	Close()

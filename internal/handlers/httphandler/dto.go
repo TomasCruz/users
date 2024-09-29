@@ -1,6 +1,6 @@
 package httphandler
 
-import "github.com/TomasCruz/users/internal/domain/entities"
+import "github.com/TomasCruz/users/internal/core/entities"
 
 func userDTOFromCreateUserReq(req CreateUserReq) entities.UserDTO {
 	return entities.UserDTO{

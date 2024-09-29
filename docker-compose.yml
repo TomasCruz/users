@@ -73,6 +73,14 @@ services:
         kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic user-updated --replication-factor 1 --partitions 1
         kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic user-deleted --replication-factor 1 --partitions 1
 
+  nats:
+    container_name: nats
+    image: nats:latest
+    ports:
+      - 4222:4222
+    networks:
+      - default
+
 networks:
   default:
 

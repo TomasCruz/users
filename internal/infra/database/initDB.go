@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 
-	"github.com/TomasCruz/users/internal/domain/ports"
+	"github.com/TomasCruz/users/internal/core/ports"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/pkg/errors"
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/TomasCruz/users/internal/domain/entities"
+	"github.com/TomasCruz/users/internal/core/entities"
 	"github.com/TomasCruz/users/internal/handlers/grpchandler/users"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -19,7 +19,7 @@ func (g *GRPCHandler) GetUserByID(ctx context.Context, req *users.UserIDReqMsg) 
 		return nil, err
 	}
 
-	user, err := g.cr.GetUserByID(uid)
+	user, err := g.svc.GetUserByID(uid)
 	if err != nil {
 		g.logger.Error(err, "GRPCHandler.GetUserByID")
 		return nil, err
@@ -58,7 +58,7 @@ func (g *GRPCHandler) ListUser(ctx context.Context, req *users.ListUserReqMsg) (
 	userFilter := entities.ExtractUserFilter(filter)
 	ps, pn := entities.ExtractPagination(filter, nil, nil)
 
-	userList, totalCount, err := g.cr.ListUser(userFilter, ps, pn)
+	userList, totalCount, err := g.svc.ListUser(userFilter, ps, pn)
 	if err != nil {
 		g.logger.Error(err, "HTTPHandler.ListUserHandler")
 		return nil, err

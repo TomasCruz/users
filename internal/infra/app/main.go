@@ -5,8 +5,8 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/TomasCruz/users/internal/domain/core"
-	"github.com/TomasCruz/users/internal/domain/ports"
+	"github.com/TomasCruz/users/internal/core/ports"
+	"github.com/TomasCruz/users/internal/core/service/app"
 	"github.com/TomasCruz/users/internal/handlers/grpchandler"
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/infra/configuration"
@@ -51,14 +51,14 @@ func (a *App) Start() {
 	}
 
 	// new Service
-	cr := core.New(db, msgProducer, logger)
+	svc := app.NewAppUserService(db, msgProducer, logger)
 
 	// init HTTP handler
 	e := echo.New()
-	h := httphandler.New(e, config.Port, cr, logger)
+	h := httphandler.New(e, config.Port, svc, logger)
 
 	// init gRPC handler
-	g := grpchandler.New(config.GRPCPort, cr, logger)
+	g := grpchandler.New(config.GRPCPort, svc, logger)
 
 	// notify about readiness
 	if a.ServerReady != nil {
