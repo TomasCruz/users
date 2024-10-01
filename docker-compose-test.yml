@@ -77,6 +77,14 @@ services:
         kafka-topics --bootstrap-server kafka_test:39092 --create --if-not-exists --topic user-updated --replication-factor 1 --partitions 1
         kafka-topics --bootstrap-server kafka_test:39092 --create --if-not-exists --topic user-deleted --replication-factor 1 --partitions 1
 
+  nats_test:
+    container_name: nats_test
+    image: nats:latest
+    ports:
+      - 14222:4222
+    networks:
+      - default_test
+
 networks:
   default_test:
 

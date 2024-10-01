@@ -56,15 +56,27 @@ func ConfigFromEnvVars(envFile string) (Config, error) {
 		return Config{}, errors.WithStack(err)
 	}
 
+	natsURL, err := readAndCheckEnvVar("HEX_TEMPLATE_USERS_NATS_URL")
+	if err != nil {
+		return Config{}, errors.WithStack(err)
+	}
+
+	natsSubjectCreateUser, err := readAndCheckEnvVar("HEX_TEMPLATE_USERS_NATS_SUBJECT_CREATE_USER")
+	if err != nil {
+		return Config{}, errors.WithStack(err)
+	}
+
 	return Config{
-		MinLogLevel:     minLogLevel,
-		Port:            port,
-		GRPCPort:        gRPCPort,
-		DBURL:           dbURL,
-		DBMigrationPath: dbMigrationPath,
-		KafkaURL:        kafkaURL,
-		CreateUserTopic: createUserTopic,
-		UpdateUserTopic: updateUserTopic,
-		DeleteUserTopic: deleteUserTopic,
+		MinLogLevel:           minLogLevel,
+		Port:                  port,
+		GRPCPort:              gRPCPort,
+		DBURL:                 dbURL,
+		DBMigrationPath:       dbMigrationPath,
+		KafkaURL:              kafkaURL,
+		CreateUserTopic:       createUserTopic,
+		UpdateUserTopic:       updateUserTopic,
+		DeleteUserTopic:       deleteUserTopic,
+		NatsURL:               natsURL,
+		NatsSubjectCreateUser: natsSubjectCreateUser,
 	}, nil
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/TomasCruz/users/internal/infra/database"
 	"github.com/TomasCruz/users/internal/infra/log"
 	"github.com/TomasCruz/users/internal/infra/msg"
+	"github.com/TomasCruz/users/internal/infra/nts"
 	"github.com/labstack/echo/v4"
 )
 
@@ -50,8 +51,18 @@ func (a *App) Start() {
 		logger.Fatal(err, "failed to create Kafka producer")
 	}
 
+	// NATS
+	nc, err := nts.InitNatsConsumer(config, logger)
+	if err != nil {
+		logger.Fatal(err, "failed to create NATS consumer")
+	}
+	err = nc.SubUserCreated()
+	if err != nil {
+		logger.Fatal(err, "failed to subscribe on NATS user created subject")
+	}
+
 	// new Service
-	svc := app.NewAppUserService(db, msgProducer, logger)
+	svc := app.NewAppUserService(db, msgProducer, nc, logger)
 
 	// init HTTP handler
 	e := echo.New()
@@ -70,12 +81,18 @@ func (a *App) Start() {
 	signal.Notify(stop, os.Interrupt)
 
 	<-stop
-	gracefulShutdown(db, msgProducer, h, g, logger)
+	gracefulShutdown(db, msgProducer, nc, h, g, logger)
 }
 
-func gracefulShutdown(db ports.DB, msgProducer ports.MsgProducer, h httphandler.HTTPHandler, g *grpchandler.GRPCHandler, logger ports.Logger) {
+func gracefulShutdown(db ports.DB, msgProducer ports.MsgProducer, nc ports.NatsConsumer, h httphandler.HTTPHandler, g *grpchandler.GRPCHandler, logger ports.Logger) {
+	// NATS
+	err := nc.Unsubscribe()
+	if err != nil {
+		logger.Error(err, "NATS Unsubscribe failed")
+	}
+
 	// Echo
-	err := h.Close()
+	err = h.Close()
 	if err != nil {
 		logger.Error(err, "Echo Close failed")
 	}

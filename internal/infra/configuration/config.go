@@ -5,15 +5,17 @@ import (
 )
 
 type Config struct {
-	MinLogLevel     string
-	Port            string
-	GRPCPort        string
-	DBURL           string
-	DBMigrationPath string
-	KafkaURL        string
-	CreateUserTopic string
-	UpdateUserTopic string
-	DeleteUserTopic string
+	MinLogLevel           string
+	Port                  string
+	GRPCPort              string
+	DBURL                 string
+	DBMigrationPath       string
+	KafkaURL              string
+	CreateUserTopic       string
+	UpdateUserTopic       string
+	DeleteUserTopic       string
+	NatsURL               string
+	NatsSubjectCreateUser string
 }
 
 func (c Config) String() string {
@@ -53,6 +55,14 @@ func (c Config) String() string {
 
 	sb.WriteString("DeleteUserTopic:\t")
 	sb.WriteString(c.DeleteUserTopic)
+	sb.WriteRune('\n')
+
+	sb.WriteString("NatsURL:\t")
+	sb.WriteString(c.NatsURL)
+	sb.WriteRune('\n')
+
+	sb.WriteString("NatsSubjectCreateUser:\t")
+	sb.WriteString(c.NatsSubjectCreateUser)
 	sb.WriteRune('\n')
 
 	return sb.String()
