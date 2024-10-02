@@ -5,13 +5,13 @@ import (
 )
 
 type WorkerUserService struct {
-	np     ports.NatsProducer
-	logger ports.Logger
+	msgProducer ports.MsgProducer
+	logger      ports.Logger
 }
 
-func NewWorkerUserService(np ports.NatsProducer, logger ports.Logger) WorkerUserService {
+func NewWorkerUserService(msgProducer ports.MsgProducer, logger ports.Logger) WorkerUserService {
 	return WorkerUserService{
-		np:     np,
-		logger: logger,
+		msgProducer: msgProducer,
+		logger:      logger,
 	}
 }

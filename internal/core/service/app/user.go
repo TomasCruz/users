@@ -45,7 +45,7 @@ func (svc AppUserService) CreateUser(req entities.UserDTO) (entities.User, error
 		return entities.User{}, err
 	}
 
-	err = svc.msgProducer.PublishUserModification(user, entities.CREATE_MODIFICATION)
+	err = svc.queueProducer.PublishUserEvent(user, entities.CREATE_MODIFICATION)
 	if err != nil {
 		return entities.User{}, err
 	}

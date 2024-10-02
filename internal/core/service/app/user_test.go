@@ -137,7 +137,8 @@ func Test_CreateUser(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			db := &mocks.DB{}
-			msg := &mocks.MsgProducer{}
+			qProd := &mocks.QueueProducer{}
+			msgCons := &mocks.MsgConsumer{}
 			logger := &mocks.Logger{}
 
 			db.On("GetUserByEmail", *tt.req.Email).
@@ -149,11 +150,11 @@ func Test_CreateUser(t *testing.T) {
 			}
 
 			if tt.shouldPublish {
-				msg.On("PublishUserModification", tt.createdUser, entities.CREATE_MODIFICATION).
+				qProd.On("PublishUserEvent", tt.createdUser, entities.CREATE_MODIFICATION).
 					Return(tt.publishErr)
 			}
 
-			svc := NewAppUserService(db, msg, logger)
+			svc := NewAppUserService(db, qProd, msgCons, logger)
 			resultUser, err := svc.CreateUser(tt.req)
 
 			tests.AssertEqualError(t, tt.err, err, "should return expected error")

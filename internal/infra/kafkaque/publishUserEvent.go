@@ -1,4 +1,4 @@
-package msg
+package kafkaque
 
 import (
 	"encoding/json"
@@ -8,24 +8,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (k kafkaMsgProducer) PublishUserModification(user entities.User, modificationType entities.UserModification) error {
-	var topic string
-	switch modificationType {
-	case entities.CREATE_MODIFICATION:
-		topic = k.config.CreateUserTopic
-	case entities.UPDATE_MODIFICATION:
-		topic = k.config.UpdateUserTopic
-	case entities.DELETE_MODIFICATION:
-		topic = k.config.DeleteUserTopic
-	default:
-		return errors.WithStack(entities.ErrBadMsgType)
-	}
-
+func (k kafkaProducer) publishUserCreatedEvent(user entities.User) error {
 	serialized, err := json.Marshal(user)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
+	topic := k.config.CreateUserTopic
 	if err = k.kp.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          serialized,
@@ -34,6 +23,5 @@ func (k kafkaMsgProducer) PublishUserModification(user entities.User, modificati
 	}
 
 	k.kp.Flush(100)
-
 	return nil
 }

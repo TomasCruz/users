@@ -11,9 +11,9 @@ import (
 	"github.com/TomasCruz/users/internal/handlers/httphandler"
 	"github.com/TomasCruz/users/internal/infra/configuration"
 	"github.com/TomasCruz/users/internal/infra/database"
+	"github.com/TomasCruz/users/internal/infra/kafkaque"
 	"github.com/TomasCruz/users/internal/infra/log"
-	"github.com/TomasCruz/users/internal/infra/msg"
-	"github.com/TomasCruz/users/internal/infra/nts"
+	"github.com/TomasCruz/users/internal/infra/natsmsg"
 	"github.com/labstack/echo/v4"
 )
 
@@ -46,23 +46,19 @@ func (a *App) Start() {
 	}
 
 	// Kafka producer
-	msgProducer, err := msg.InitProducer(config, logger)
+	kafkaProducer, err := kafkaque.InitProducer(config, logger)
 	if err != nil {
 		logger.Fatal(err, "failed to create Kafka producer")
 	}
 
 	// NATS
-	nc, err := nts.InitNatsConsumer(config, logger)
+	natsConsumer, err := natsmsg.InitConsumer(config, logger)
 	if err != nil {
-		logger.Fatal(err, "failed to create NATS consumer")
-	}
-	err = nc.SubUserCreated()
-	if err != nil {
-		logger.Fatal(err, "failed to subscribe on NATS user created subject")
+		logger.Fatal(err, "failed to init NATS consumer")
 	}
 
 	// new Service
-	svc := app.NewAppUserService(db, msgProducer, nc, logger)
+	svc := app.NewAppUserService(db, kafkaProducer, natsConsumer, logger)
 
 	// init HTTP handler
 	e := echo.New()
@@ -81,12 +77,12 @@ func (a *App) Start() {
 	signal.Notify(stop, os.Interrupt)
 
 	<-stop
-	gracefulShutdown(db, msgProducer, nc, h, g, logger)
+	gracefulShutdown(db, kafkaProducer, natsConsumer, h, g, logger)
 }
 
-func gracefulShutdown(db ports.DB, msgProducer ports.MsgProducer, nc ports.NatsConsumer, h httphandler.HTTPHandler, g *grpchandler.GRPCHandler, logger ports.Logger) {
+func gracefulShutdown(db ports.DB, kafkaProducer ports.QueueProducer, natsConsumer ports.MsgConsumer, h httphandler.HTTPHandler, g *grpchandler.GRPCHandler, logger ports.Logger) {
 	// NATS
-	err := nc.Unsubscribe()
+	err := natsConsumer.Close()
 	if err != nil {
 		logger.Error(err, "NATS Unsubscribe failed")
 	}
@@ -101,7 +97,7 @@ func gracefulShutdown(db ports.DB, msgProducer ports.MsgProducer, nc ports.NatsC
 	g.Close()
 
 	// Kafka
-	msgProducer.Close()
+	kafkaProducer.Close()
 
 	// DB
 	err = db.Close()

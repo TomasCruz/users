@@ -1,4 +1,4 @@
-package nts
+package natsmsg
 
 import (
 	"github.com/TomasCruz/users/internal/core/ports"
@@ -6,21 +6,29 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
-func InitNatsProducer(config configuration.Config, logger ports.Logger) (ports.NatsProducer, error) {
+func InitConsumer(config configuration.Config, logger ports.Logger) (ports.MsgConsumer, error) {
 	nc, err := nats.Connect(config.NatsURL)
 	if err != nil {
 		return nil, err
 	}
 
-	return natsProducer{
+	nCons := &natsConsumer{
 		nc:     nc,
 		config: config,
 		logger: logger,
-	}, nil
+	}
+
+	err = nCons.subUserCreated()
+	if err != nil {
+		return nil, err
+	}
+
+	return nCons, nil
 }
 
-type natsProducer struct {
+type natsConsumer struct {
 	nc     *nats.Conn
+	sub    *nats.Subscription
 	config configuration.Config
 	logger ports.Logger
 }

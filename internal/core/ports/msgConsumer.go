@@ -1,5 +1,5 @@
 package ports
 
 type MsgConsumer interface {
-	Close()
+	Close() error
 }

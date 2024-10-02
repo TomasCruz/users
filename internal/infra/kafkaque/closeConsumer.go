@@ -1,6 +1,6 @@
-package msg
+package kafkaque
 
-func (k *kafkaMsgConsumer) Close() {
+func (k *kafkaConsumer) Close() {
 	k.logger.Debug(nil, "worker shutdownReceived")
 	k.shutdownReceived = true
 	<-k.shutdownComplete

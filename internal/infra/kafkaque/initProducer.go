@@ -1,4 +1,4 @@
-package msg
+package kafkaque
 
 import (
 	"github.com/TomasCruz/users/internal/core/ports"
@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func InitProducer(config configuration.Config, logger ports.Logger) (ports.MsgProducer, error) {
+func InitProducer(config configuration.Config, logger ports.Logger) (ports.QueueProducer, error) {
 	kp, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers": config.KafkaURL,
 	})
@@ -16,10 +16,10 @@ func InitProducer(config configuration.Config, logger ports.Logger) (ports.MsgPr
 		return nil, err
 	}
 
-	return kafkaMsgProducer{kp: kp, config: config, logger: logger}, nil
+	return kafkaProducer{kp: kp, config: config, logger: logger}, nil
 }
 
-type kafkaMsgProducer struct {
+type kafkaProducer struct {
 	kp     *kafka.Producer
 	config configuration.Config
 	logger ports.Logger

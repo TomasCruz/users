@@ -5,17 +5,17 @@ import (
 )
 
 type AppUserService struct {
-	db           ports.DB
-	msgProducer  ports.MsgProducer
-	natsConsumer ports.NatsConsumer
-	logger       ports.Logger
+	db            ports.DB
+	queueProducer ports.QueueProducer
+	msgConsumer   ports.MsgConsumer
+	logger        ports.Logger
 }
 
-func NewAppUserService(db ports.DB, msgProducer ports.MsgProducer, natsConsumer ports.NatsConsumer, logger ports.Logger) AppUserService {
+func NewAppUserService(db ports.DB, queueProducer ports.QueueProducer, msgConsumer ports.MsgConsumer, logger ports.Logger) AppUserService {
 	return AppUserService{
-		db:           db,
-		msgProducer:  msgProducer,
-		natsConsumer: natsConsumer,
-		logger:       logger,
+		db:            db,
+		queueProducer: queueProducer,
+		msgConsumer:   msgConsumer,
+		logger:        logger,
 	}
 }

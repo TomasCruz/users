@@ -1,4 +1,4 @@
-package msg
+package kafkaque
 
 import (
 	"github.com/TomasCruz/users/internal/core/ports"
@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func InitConsumer(config configuration.Config, svc worker.WorkerUserService, logger ports.Logger) (ports.MsgConsumer, error) {
+func InitConsumer(config configuration.Config, svc worker.WorkerUserService, logger ports.Logger) (ports.QueueConsumer, error) {
 	kc, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": config.KafkaURL,
 		"group.id":          "group.id",
@@ -19,7 +19,7 @@ func InitConsumer(config configuration.Config, svc worker.WorkerUserService, log
 		return nil, err
 	}
 
-	consumer := kafkaMsgConsumer{kc: kc, config: config, svc: svc, logger: logger, shutdownReceived: false, shutdownComplete: make(chan struct{}, 1)}
+	consumer := kafkaConsumer{kc: kc, config: config, svc: svc, logger: logger, shutdownReceived: false, shutdownComplete: make(chan struct{}, 1)}
 
 	// Subscribe to the Kafka topic
 	err = consumer.kc.SubscribeTopics([]string{config.CreateUserTopic}, nil)
@@ -34,7 +34,7 @@ func InitConsumer(config configuration.Config, svc worker.WorkerUserService, log
 	return &consumer, nil
 }
 
-type kafkaMsgConsumer struct {
+type kafkaConsumer struct {
 	kc               *kafka.Consumer
 	config           configuration.Config
 	svc              worker.WorkerUserService

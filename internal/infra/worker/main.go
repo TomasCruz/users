@@ -5,9 +5,9 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/TomasCruz/users/internal/infra/kafkaque"
 	"github.com/TomasCruz/users/internal/infra/log"
-	"github.com/TomasCruz/users/internal/infra/msg"
-	"github.com/TomasCruz/users/internal/infra/nts"
+	"github.com/TomasCruz/users/internal/infra/natsmsg"
 
 	"github.com/TomasCruz/users/internal/core/ports"
 	"github.com/TomasCruz/users/internal/core/service/worker"
@@ -36,7 +36,7 @@ func (w *WorkerApp) Start() {
 	w.Config = config
 
 	// NATS
-	np, err := nts.InitNatsProducer(config, logger)
+	np, err := natsmsg.InitProducer(config, logger)
 	if err != nil {
 		logger.Fatal(err, "failed to create NATS producer")
 	}
@@ -45,7 +45,7 @@ func (w *WorkerApp) Start() {
 	svc := worker.NewWorkerUserService(np, logger)
 
 	// Kafka consumer
-	msgConsumer, err := msg.InitConsumer(config, svc, logger)
+	kafkaConsumer, err := kafkaque.InitConsumer(config, svc, logger)
 	if err != nil {
 		logger.Fatal(err, "failed to create Kafka consumer")
 	}
@@ -55,18 +55,18 @@ func (w *WorkerApp) Start() {
 	signal.Notify(stop, os.Interrupt)
 
 	<-stop
-	gracefulShutdown(msgConsumer, np, logger)
+	gracefulShutdown(kafkaConsumer, np, logger)
 }
 
-func gracefulShutdown(msgConsumer ports.MsgConsumer, np ports.NatsProducer, logger ports.Logger) {
+func gracefulShutdown(kafkaConsumer ports.QueueConsumer, np ports.MsgProducer, logger ports.Logger) {
 	// NATS
-	err := np.Drain()
+	err := np.Close()
 	if err != nil {
 		logger.Error(err, "NATS Drain failed")
 	}
 
 	// Kafka
-	msgConsumer.Close()
+	kafkaConsumer.Close()
 
 	logger.Debug(nil, "worker gracefulShutdown complete")
 }
