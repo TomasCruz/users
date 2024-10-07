@@ -1,5 +1,5 @@
 # Users
-clean architecture server example
+hexagonal architecture server example
 
 ## Features
 - integrates [swaggo](https://github.com/swaggo/swag) and [echo-swagger](github.com/swaggo/echo-swagger) for generating swagger documentation and Swagger UI
